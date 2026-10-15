@@ -1,0 +1,3018 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Desgaste do kart</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta
+      name="theme-color"
+      content="#ECEDEE"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#141517"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="icon" type="image/png" href="icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <style>
+      @font-face {
+        font-family: "Barlow";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("fonts/barlow-latin-400-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Barlow";
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url("fonts/barlow-latin-500-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Barlow";
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url("fonts/barlow-latin-600-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Barlow Condensed";
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url("fonts/barlow-condensed-latin-600-normal.woff2")
+          format("woff2");
+      }
+      @font-face {
+        font-family: "Barlow Condensed";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("fonts/barlow-condensed-latin-700-normal.woff2")
+          format("woff2");
+      }
+      :root {
+        --bg: #ecedee;
+        --surface: #ffffff;
+        --ink: #16181c;
+        --muted: #5b6068;
+        --line: #cdd0d4;
+        --accent: #c8312b;
+        --accent-ink: #ffffff;
+        --soft: #f4f5f6;
+        --display:
+          "Barlow Condensed", "Roboto Condensed", "Arial Narrow", sans-serif;
+        --body:
+          "Barlow", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #141517;
+          --surface: #1e2024;
+          --ink: #f1f2f3;
+          --muted: #9aa0a8;
+          --line: #32353b;
+          --accent: #e5544d;
+          --accent-ink: #16181c;
+          --soft: #26292e;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #141517;
+        --surface: #1e2024;
+        --ink: #f1f2f3;
+        --muted: #9aa0a8;
+        --line: #32353b;
+        --accent: #e5544d;
+        --accent-ink: #16181c;
+        --soft: #26292e;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--body);
+        font-size: 16px;
+        line-height: 1.45;
+        -webkit-text-size-adjust: 100%;
+      }
+      .wrap {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 16px 48px;
+      }
+      header {
+        padding: 22px 0 14px;
+      }
+      h1 {
+        margin: 0;
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 40px;
+        line-height: 1;
+        letter-spacing: 0.01em;
+      }
+      .sub {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+      .kerb {
+        height: 8px;
+        border-radius: 2px;
+        border: 1px solid var(--line);
+        background: repeating-linear-gradient(
+          90deg,
+          var(--accent) 0 20px,
+          #fff 20px 40px
+        );
+      }
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        margin: 18px 0;
+        padding: 4px;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      .tabs button {
+        min-height: 48px;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        color: var(--muted);
+        font: 600 17px var(--body);
+        cursor: pointer;
+      }
+      .tabs button[aria-selected="true"] {
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: inset 0 -3px 0 var(--accent);
+      }
+      button:focus-visible,
+      input:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      h2 {
+        margin: 0;
+        font-family: var(--display);
+        font-weight: 600;
+        font-size: 24px;
+        letter-spacing: 0.01em;
+      }
+      label,
+      .lbl {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      .lbl {
+        margin-bottom: 6px;
+      }
+      input[type="text"],
+      input[type="date"],
+      input[type="number"] {
+        display: block;
+        width: 100%;
+        min-height: 48px;
+        margin-top: 4px;
+        padding: 8px 12px;
+        font: 500 16px var(--body);
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+      .row2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .row3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .brandseg {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .brandseg button {
+        min-height: 52px;
+        padding: 6px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: var(--soft);
+        color: var(--ink);
+        font: 600 15px var(--body);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-align: center;
+      }
+      .brandseg button[aria-pressed="true"] {
+        background: var(--surface);
+        border-color: var(--ink);
+        box-shadow: inset 0 -3px 0 var(--accent);
+      }
+      .dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex: none;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0 0 14px;
+      }
+      .chip {
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 22px;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: var(--soft);
+        color: var(--ink);
+        font: 600 15px var(--body);
+      }
+      .chip[aria-pressed="true"] {
+        background: var(--ink);
+        color: var(--bg);
+        border-color: var(--ink);
+      }
+      .seg {
+        display: inline-flex;
+        gap: 4px;
+        padding: 3px;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        margin: 4px 0 0;
+      }
+      .seg button {
+        min-height: 40px;
+        min-width: 56px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--muted);
+        font: 600 15px var(--body);
+        cursor: pointer;
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: inset 0 -2px 0 var(--accent);
+      }
+
+      .primary {
+        width: 100%;
+        min-height: 52px;
+        border: 0;
+        border-radius: 10px;
+        cursor: pointer;
+        background: var(--accent);
+        color: var(--accent-ink);
+        font: 600 18px var(--body);
+      }
+      .ghost {
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--ink);
+        font: 600 14px var(--body);
+      }
+      .ghost.grow {
+        flex: 1;
+        min-height: 48px;
+        font-size: 15px;
+      }
+      .msg {
+        min-height: 1.4em;
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .scroll {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+      th,
+      td {
+        padding: 10px 8px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+      }
+      td.wrapok {
+        white-space: normal;
+        min-width: 120px;
+      }
+      th {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      td.num,
+      th.num {
+        text-align: right;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      .del {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font: 600 14px var(--body);
+      }
+      .del[data-armed="1"] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+      .empty {
+        margin: 8px 0 0;
+        color: var(--muted);
+      }
+      .brand-h {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 14px 0 2px;
+        font: 600 20px var(--display);
+      }
+      .brand-h:first-child {
+        margin-top: 0;
+      }
+
+      .badge {
+        padding: 4px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 14px;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+      .badge.warn {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+      .slots {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .slot {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+        background: var(--bg);
+        min-width: 0;
+      }
+      .slot.done {
+        background: var(--soft);
+        border-color: var(--ink);
+      }
+      .slot.next {
+        border: 2px dashed var(--accent);
+      }
+      .slot-l {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .slot-v {
+        display: block;
+        font: 700 22px/1.15 var(--display);
+        font-variant-numeric: tabular-nums;
+      }
+      .slot.empty-s .slot-v {
+        color: var(--muted);
+      }
+      .slot-x {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        overflow-wrap: anywhere;
+      }
+      .motor-total {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .hk-cap {
+        margin: 0 0 6px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .actions2 {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      details {
+        margin-top: 14px;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--muted);
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+
+      .head-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      ul.slist {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .srow {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
+      }
+      .srow:last-child {
+        border-bottom: 0;
+      }
+      .sinfo {
+        flex: 1 1 140px;
+        min-width: 0;
+      }
+      .sname {
+        display: block;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+      }
+      .smeta {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .sctl {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: none;
+      }
+      .step {
+        min-width: 54px;
+        min-height: 48px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: var(--soft);
+        color: var(--ink);
+        font: 700 18px var(--body);
+      }
+      .step.plus {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+      .sqty {
+        min-width: 64px;
+        min-height: 48px;
+        padding: 0 6px;
+        border: 0;
+        border-bottom: 2px dotted var(--line);
+        border-radius: 0;
+        background: transparent;
+        color: var(--ink);
+        font: 700 28px var(--display);
+        font-variant-numeric: tabular-nums;
+        cursor: pointer;
+      }
+      .sctl .sqty-in {
+        width: 88px;
+        min-height: 48px;
+        margin: 0;
+        text-align: center;
+        font: 700 22px var(--display);
+      }
+
+      .srow.editing {
+        display: block;
+      }
+      .sedit {
+        width: 100%;
+      }
+      .srow-tools {
+        display: flex;
+        gap: 8px;
+        flex: 1 1 100%;
+      }
+      .actions2 .primary {
+        width: auto;
+        flex: 2;
+      }
+      .row-actions {
+        display: flex;
+        gap: 6px;
+      }
+      tr.editing td {
+        background: var(--soft);
+      }
+
+      .backup > summary {
+        font: 600 22px var(--display);
+        color: var(--ink);
+        min-height: 48px;
+      }
+      .backup[open] > summary {
+        margin-bottom: 8px;
+      }
+      .hint-p {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      #toast {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+        max-width: calc(100% - 32px);
+        padding: 12px 18px;
+        border-radius: 10px;
+        background: var(--ink);
+        color: var(--bg);
+        font-weight: 600;
+        font-size: 15px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s;
+      }
+      #toast.show {
+        opacity: 1;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #toast {
+          transition: none;
+        }
+      }
+      @media (max-width: 380px) {
+        h1 {
+          font-size: 34px;
+        }
+        .slot-v {
+          font-size: 19px;
+        }
+        .slot {
+          padding: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Desgaste do kart</h1>
+      </header>
+      <div class="kerb" aria-hidden="true"></div>
+
+      <div class="tabs" role="tablist" aria-label="Equipamento">
+        <button
+          role="tab"
+          id="tab-pneus"
+          aria-controls="panel-pneus"
+          aria-selected="true"
+        >
+          Pneus
+        </button>
+        <button
+          role="tab"
+          id="tab-oleo"
+          aria-controls="panel-oleo"
+          aria-selected="false"
+        >
+          Motores
+        </button>
+        <button
+          role="tab"
+          id="tab-estoque"
+          aria-controls="panel-estoque"
+          aria-selected="false"
+        >
+          Estoque
+        </button>
+      </div>
+
+      <!-- PNEUS -->
+      <section id="panel-pneus" role="tabpanel" aria-labelledby="tab-pneus">
+        <div class="card">
+          <div class="card-head"><h2>Registrar uso do pneu</h2></div>
+          <label
+            >Data
+            <input type="date" id="t-date" />
+          </label>
+          <div class="lbl" id="lbl-brand">Marca</div>
+          <div
+            class="brandseg"
+            id="t-brands"
+            role="group"
+            aria-labelledby="lbl-brand"
+          ></div>
+          <div class="lbl" id="lbl-set">Jogo</div>
+          <div
+            class="chips"
+            id="t-sets"
+            role="group"
+            aria-labelledby="lbl-set"
+          ></div>
+          <label id="t-setname-wrap" hidden
+            >Nome do novo jogo
+            <input
+              type="text"
+              id="t-setname"
+              maxlength="30"
+              autocomplete="off"
+              placeholder="Padrão: 1° Jogo"
+            />
+          </label>
+          <div class="lbl" id="lbl-track">Condição da pista</div>
+          <div
+            class="brandseg"
+            id="t-track"
+            role="group"
+            aria-labelledby="lbl-track"
+          >
+            <button type="button" data-track="seca" aria-pressed="true">
+              Seca
+            </button>
+            <button type="button" data-track="molhada" aria-pressed="false">
+              Molhada
+            </button>
+          </div>
+          <div class="row2">
+            <label
+              >Voltas
+              <input
+                type="number"
+                id="t-laps"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                placeholder="0"
+              />
+            </label>
+            <label
+              >Pressão
+              <input
+                type="text"
+                id="t-press"
+                inputmode="decimal"
+                autocomplete="off"
+                placeholder="0,0"
+              />
+            </label>
+          </div>
+          <label
+            >Observação
+            <input
+              type="text"
+              id="t-obs"
+              maxlength="120"
+              autocomplete="off"
+              placeholder="Opcional"
+            />
+          </label>
+          <p class="msg" id="t-msg" role="alert"></p>
+          <button type="button" class="primary" id="t-add">
+            Registrar uso
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Desgaste por jogo</h2></div>
+          <div class="scroll" id="t-sum"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Histórico</h2>
+            <button type="button" class="ghost" id="t-export">
+              Exportar CSV
+            </button>
+          </div>
+          <div class="scroll" id="t-hist"></div>
+        </div>
+      </section>
+
+      <!-- MOTORES -->
+      <section
+        id="panel-oleo"
+        role="tabpanel"
+        aria-labelledby="tab-oleo"
+        hidden
+      >
+        <div class="card">
+          <div class="card-head">
+            <h2>Registro de óleo</h2>
+            <button type="button" class="ghost" id="o-export">
+              Exportar CSV
+            </button>
+          </div>
+          <label
+            >Data do registro
+            <input type="date" id="o-date" />
+          </label>
+          <div class="lbl" id="lbl-hmode">Horas e km informados como</div>
+          <div
+            class="seg"
+            id="hmode-seg"
+            role="group"
+            aria-labelledby="lbl-hmode"
+            style="margin-bottom: 12px"
+          >
+            <button type="button" data-mode="delta" aria-pressed="true">
+              Desta sessão
+            </button>
+            <button type="button" data-mode="total" aria-pressed="false">
+              Total acumulado
+            </button>
+          </div>
+          <p class="msg" id="o-msg" role="alert"></p>
+        </div>
+
+        <div id="o-list"></div>
+
+        <div class="card">
+          <div class="card-head"><h2>Adicionar motor</h2></div>
+          <div class="row2">
+            <label
+              >Número do motor
+              <input
+                type="text"
+                id="m-new"
+                maxlength="10"
+                autocomplete="off"
+                placeholder="Ex.: 52"
+              />
+            </label>
+            <div
+              style="display: flex; align-items: flex-end; margin-bottom: 12px"
+            >
+              <button type="button" class="primary" id="m-add">
+                Adicionar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ESTOQUE -->
+      <section
+        id="panel-estoque"
+        role="tabpanel"
+        aria-labelledby="tab-estoque"
+        hidden
+      >
+        <div
+          class="brandseg"
+          id="s-view"
+          role="group"
+          aria-label="Tipo de lista"
+        >
+          <button type="button" data-view="cons" aria-pressed="true">
+            Consumíveis
+          </button>
+          <button type="button" data-view="equip" aria-pressed="false">
+            Equipamentos
+          </button>
+        </div>
+
+        <div id="s-cons">
+          <div class="card">
+            <div class="card-head">
+              <h2>Consumíveis</h2>
+              <div class="head-actions">
+                <button type="button" class="ghost" id="s-manage">
+                  Editar lista
+                </button>
+                <button type="button" class="ghost" id="s-export">
+                  Exportar CSV
+                </button>
+              </div>
+            </div>
+            <ul class="slist" id="s-list"></ul>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h2>Novo consumível</h2></div>
+            <label
+              >Nome
+              <input
+                type="text"
+                id="s-name"
+                maxlength="40"
+                autocomplete="off"
+                placeholder="Ex.: Velas"
+              />
+            </label>
+            <div class="row2">
+              <label
+                >Unidade
+                <input
+                  type="text"
+                  id="s-unit"
+                  maxlength="12"
+                  autocomplete="off"
+                  placeholder="Ex.: Latas"
+                />
+              </label>
+              <label
+                >Quantidade inicial
+                <input
+                  type="text"
+                  id="s-qty"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  placeholder="0"
+                />
+              </label>
+            </div>
+            <div
+              class="chips"
+              id="s-units"
+              role="group"
+              aria-label="Unidades sugeridas"
+            ></div>
+            <p class="msg" id="s-msg" role="alert"></p>
+            <button type="button" class="primary" id="s-add">
+              Adicionar item
+            </button>
+          </div>
+        </div>
+
+        <div id="s-equip" hidden>
+          <div class="card">
+            <div class="card-head">
+              <h2>Equipamentos</h2>
+              <button type="button" class="ghost" id="g-export">
+                Exportar CSV
+              </button>
+            </div>
+            <div class="scroll" id="g-list"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h2 id="g-form-title">Novo equipamento</h2>
+            </div>
+            <label
+              >Nome
+              <input
+                type="text"
+                id="g-name"
+                maxlength="40"
+                autocomplete="off"
+                placeholder="Ex.: Carburador"
+              />
+            </label>
+            <label
+              >Identificador
+              <input
+                type="text"
+                id="g-ident"
+                maxlength="30"
+                autocomplete="off"
+                placeholder="Opcional"
+              />
+            </label>
+            <label
+              >Observação
+              <input
+                type="text"
+                id="g-obs"
+                maxlength="120"
+                autocomplete="off"
+                placeholder="Opcional"
+              />
+            </label>
+            <p class="msg" id="g-msg" role="alert"></p>
+            <button type="button" class="primary" id="g-add">
+              Adicionar equipamento
+            </button>
+            <button
+              type="button"
+              class="ghost grow"
+              id="g-cancel"
+              hidden
+              style="width: 100%; margin-top: 10px"
+            >
+              Cancelar edição
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <details class="card backup" id="backup">
+        <summary>Backup e restauração</summary>
+        <p class="hint-p" id="b-last"></p>
+        <button type="button" class="primary" id="b-export">
+          Exportar backup (JSON)
+        </button>
+
+        <div class="lbl" id="lbl-bmode" style="margin-top: 18px">
+          Ao importar um backup
+        </div>
+        <div
+          class="seg"
+          id="bmode-seg"
+          role="group"
+          aria-labelledby="lbl-bmode"
+          style="margin-bottom: 10px"
+        >
+          <button type="button" data-bmode="merge" aria-pressed="true">
+            Mesclar
+          </button>
+          <button type="button" data-bmode="replace" aria-pressed="false">
+            Substituir tudo
+          </button>
+        </div>
+        <p class="hint-p" id="b-modehint"></p>
+        <button
+          type="button"
+          class="ghost grow"
+          id="b-pick"
+          style="width: 100%"
+        >
+          Escolher arquivo de backup…
+        </button>
+        <input type="file" id="b-file" accept=".json,application/json" hidden />
+        <div id="b-pending" hidden style="margin-top: 12px">
+          <p class="hint-p" id="b-summary"></p>
+          <div class="actions2">
+            <button type="button" class="primary" id="b-apply">Aplicar</button>
+            <button type="button" class="ghost grow" id="b-cancel">
+              Cancelar
+            </button>
+          </div>
+        </div>
+        <p class="msg" id="b-msg" role="alert" style="margin-top: 10px"></p>
+      </details>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      (function () {
+        "use strict";
+        var KEY = "kart-desgaste:v2";
+        var BRANDS = [
+          { name: "MG Vermelho", color: "#D32F2F" },
+          { name: "MG Chuva", color: "#8A8F98" },
+          { name: "SPEED Laranja", color: "#F28C28" },
+          { name: "Maxxis", color: "#F28C28" },
+        ];
+        var CYCLE_LEN = 3;
+
+        var state = {
+          tab: "pneus",
+          brand: BRANDS[0].name,
+          track: "seca",
+          hmode: "delta",
+          motors: ["95", "33", "71"],
+          cycles: [],
+          tires: [],
+          sview: "cons",
+          gear: [],
+          stock: [],
+          lastBackup: "",
+        };
+        var selSet = 1;
+        var storageOk = true;
+        var dl = null;
+
+        function $(id) {
+          return document.getElementById(id);
+        }
+        function esc(s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return {
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[c];
+          });
+        }
+        function uid() {
+          return (
+            Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
+          );
+        }
+        function brandColor(n) {
+          for (var i = 0; i < BRANDS.length; i++)
+            if (BRANDS[i].name === n) return BRANDS[i].color;
+          return "#8A8F98";
+        }
+        function dot(n) {
+          return '<i class="dot" style="background:' + brandColor(n) + '"></i>';
+        }
+        function isNum(v) {
+          return typeof v === "number" && isFinite(v);
+        }
+
+        /* ---------- armazenamento e migração ---------- */
+        function migrateCycle(c) {
+          if (!c || typeof c !== "object" || !c.motor) return null;
+          if (Array.isArray(c.uses)) {
+            if (!c.changeDate) return null;
+            return c;
+          }
+          // formato antigo: dates[0] era a troca e já contava como 1° uso
+          var dates = Array.isArray(c.dates) ? c.dates : [];
+          if (!dates.length) return null;
+          var uses = dates.map(function (dt, i) {
+            return {
+              date: dt,
+              min:
+                c.hours && isNum(c.hours[i])
+                  ? Math.round(c.hours[i] * 60)
+                  : null,
+              km: c.km && isNum(c.km[i]) ? c.km[i] : null,
+            };
+          });
+          return {
+            id: c.id || uid(),
+            motor: String(c.motor),
+            changeDate: dates[0],
+            uses: uses,
+            obs: c.obs || "",
+          };
+        }
+        function sanitize(d) {
+          var out = {};
+          if (!d || typeof d !== "object") return out;
+          if (Array.isArray(d.tires))
+            out.tires = d.tires.filter(function (e) {
+              return (
+                e && e.id && e.brand && isNum(e.set) && isNum(e.laps) && e.date
+              );
+            });
+          if (Array.isArray(d.cycles))
+            out.cycles = d.cycles.map(migrateCycle).filter(Boolean);
+          if (Array.isArray(d.motors)) out.motors = d.motors.map(String);
+          if (Array.isArray(d.stock)) {
+            out.stock = d.stock
+              .filter(function (i) {
+                return i && i.id && i.name && isNum(i.qty);
+              })
+              .map(function (i) {
+                return {
+                  id: String(i.id),
+                  name: String(i.name),
+                  unit: String(i.unit || ""),
+                  qty: i.qty,
+                  updated: i.updated || "",
+                };
+              });
+          }
+          if (Array.isArray(d.gear)) {
+            out.gear = d.gear
+              .filter(function (g) {
+                return g && g.id && g.name;
+              })
+              .map(function (g) {
+                return {
+                  id: String(g.id),
+                  name: String(g.name),
+                  ident: String(g.ident || ""),
+                  obs: String(g.obs || ""),
+                };
+              });
+          }
+          return out;
+        }
+
+        function load() {
+          try {
+            var raw = localStorage.getItem(KEY);
+            if (!raw) return;
+            var d = JSON.parse(raw);
+            if (!d) return;
+            var sd = sanitize(d);
+            if (sd.tires) state.tires = sd.tires;
+            if (sd.cycles) state.cycles = sd.cycles;
+            if (sd.motors && sd.motors.length) state.motors = sd.motors;
+            if (sd.stock) state.stock = sd.stock;
+            if (sd.gear) state.gear = sd.gear;
+            if (d.track === "seca" || d.track === "molhada")
+              state.track = d.track;
+            if (d.hmode === "delta" || d.hmode === "total")
+              state.hmode = d.hmode;
+            if (d.tab === "pneus" || d.tab === "oleo" || d.tab === "estoque")
+              state.tab = d.tab;
+            if (d.sview === "cons" || d.sview === "equip")
+              state.sview = d.sview;
+            if (
+              typeof d.lastBackup === "string" &&
+              /^\d{4}-\d{2}-\d{2}$/.test(d.lastBackup)
+            )
+              state.lastBackup = d.lastBackup;
+            if (
+              BRANDS.some(function (b) {
+                return b.name === d.brand;
+              })
+            )
+              state.brand = d.brand;
+          } catch (e) {
+            /* começa vazio */
+          }
+        }
+        function save() {
+          try {
+            localStorage.setItem(KEY, JSON.stringify(state));
+            storageOk = true;
+          } catch (e) {
+            if (storageOk)
+              toast(
+                "Este navegador não permitiu salvar. Exporte o CSV para não perder dados.",
+              );
+            storageOk = false;
+          }
+        }
+
+        /* ---------- datas e formatação ---------- */
+        function todayIso() {
+          var d = new Date();
+          return (
+            d.getFullYear() +
+            "-" +
+            String(d.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(d.getDate()).padStart(2, "0")
+          );
+        }
+        function fmtDate(iso) {
+          var p = String(iso).split("-");
+          return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : iso;
+        }
+        function fmtDM(iso) {
+          var p = String(iso).split("-");
+          return p.length === 3 ? p[2] + "/" + p[1] : iso;
+        }
+        function fmtNum(n) {
+          return Number(n).toLocaleString("pt-BR", {
+            maximumFractionDigits: 2,
+          });
+        }
+        function fmtHM(min) {
+          return Math.floor(min / 60) + "h" + String(min % 60).padStart(2, "0");
+        }
+        function parseDec(s) {
+          return parseFloat(String(s).trim().replace(",", "."));
+        }
+        function parseNonNeg(s) {
+          var t = String(s).trim().replace(",", ".");
+          return /^\d+(\.\d+)?$/.test(t) ? parseFloat(t) : NaN;
+        }
+        function sortDesc(arr) {
+          return arr
+            .map(function (e, i) {
+              return [e, i];
+            })
+            .sort(function (a, b) {
+              return b[0].date.localeCompare(a[0].date) || b[1] - a[1];
+            })
+            .map(function (x) {
+              return x[0];
+            });
+        }
+        function sortAsc(arr) {
+          return sortDesc(arr).reverse();
+        }
+
+        var toastTimer;
+        function toast(msg) {
+          var t = $("toast");
+          t.textContent = msg;
+          t.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            t.classList.remove("show");
+          }, 3200);
+        }
+
+        /* ---------- pneus ---------- */
+        function setLabel(brand, n) {
+          for (var i = 0; i < state.tires.length; i++) {
+            var e = state.tires[i];
+            if (e.brand === brand && e.set === n && e.setName) return e.setName;
+          }
+          return n + "° Jogo";
+        }
+        function tireName(e) {
+          return e.brand + " (" + setLabel(e.brand, e.set) + ")";
+        }
+        function setsOf(brand) {
+          var seen = {},
+            out = [];
+          state.tires.forEach(function (e) {
+            if (e.brand === brand && !seen[e.set]) {
+              seen[e.set] = 1;
+              out.push(e.set);
+            }
+          });
+          return out.sort(function (a, b) {
+            return a - b;
+          });
+        }
+        function lastSetOf(brand) {
+          var l = sortDesc(
+            state.tires.filter(function (e) {
+              return e.brand === brand;
+            }),
+          );
+          return l.length ? l[0].set : 1;
+        }
+        function trackLabel(t) {
+          return t === "seca" ? "Seca" : t === "molhada" ? "Molhada" : "—";
+        }
+
+        function renderTireForm() {
+          var tb = $("t-track").querySelectorAll("button");
+          for (var ti = 0; ti < tb.length; ti++)
+            tb[ti].setAttribute(
+              "aria-pressed",
+              String(tb[ti].dataset.track === state.track),
+            );
+
+          var bw = $("t-brands");
+          bw.innerHTML = "";
+          BRANDS.forEach(function (b) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.dataset.brand = b.name;
+            btn.setAttribute("aria-pressed", String(b.name === state.brand));
+            btn.innerHTML = dot(b.name) + "<span>" + esc(b.name) + "</span>";
+            bw.appendChild(btn);
+          });
+
+          var sets = setsOf(state.brand);
+          var next = (sets.length ? sets[sets.length - 1] : 0) + 1;
+          if (sets.indexOf(selSet) === -1 && selSet !== next) selSet = next;
+          var cw = $("t-sets");
+          cw.innerHTML = "";
+          sets.forEach(function (n) {
+            cw.appendChild(setChip(n, setLabel(state.brand, n)));
+          });
+          cw.appendChild(setChip(next, "+ Novo jogo (" + next + "°)"));
+
+          var isNew = sets.indexOf(selSet) === -1;
+          $("t-setname-wrap").hidden = !isNew;
+          if (!isNew) $("t-setname").value = "";
+          $("t-setname").placeholder = "Padrão: " + selSet + "° Jogo";
+        }
+        function setChip(n, label) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "chip";
+          b.dataset.set = String(n);
+          b.textContent = label;
+          b.setAttribute("aria-pressed", String(n === selSet));
+          return b;
+        }
+
+        function renderTires() {
+          renderTireForm();
+
+          var html = "";
+          BRANDS.forEach(function (b) {
+            var es = sortAsc(
+              state.tires.filter(function (e) {
+                return e.brand === b.name;
+              }),
+            );
+            if (!es.length) return;
+            var map = {};
+            es.forEach(function (e) {
+              var m =
+                map[e.set] ||
+                (map[e.set] = { set: e.set, laps: 0, wet: 0, uses: 0 });
+              m.laps += e.laps;
+              if (e.track === "molhada") m.wet += e.laps;
+              m.uses += 1;
+              m.last = e.date;
+            });
+            var rows = Object.keys(map)
+              .map(Number)
+              .sort(function (a, c) {
+                return a - c;
+              })
+              .map(function (k) {
+                var m = map[k];
+                return (
+                  "<tr><td>" +
+                  esc(setLabel(b.name, m.set)) +
+                  '</td><td class="num">' +
+                  fmtNum(m.laps) +
+                  '</td><td class="num">' +
+                  fmtNum(m.wet) +
+                  '</td><td class="num">' +
+                  m.uses +
+                  '</td><td class="num">' +
+                  fmtDate(m.last) +
+                  "</td></tr>"
+                );
+              })
+              .join("");
+            html +=
+              '<div class="brand-h">' +
+              dot(b.name) +
+              esc(b.name) +
+              "</div><table><thead><tr><th>Jogo</th>" +
+              '<th class="num">Voltas</th><th class="num">Molhada</th><th class="num">Usos</th><th class="num">Último uso</th></tr></thead><tbody>' +
+              rows +
+              "</tbody></table>";
+          });
+          $("t-sum").innerHTML =
+            html ||
+            '<p class="empty">Nenhum jogo registrado ainda. Preencha o formulário acima.</p>';
+
+          var hist = $("t-hist");
+          if (!state.tires.length) {
+            hist.innerHTML =
+              '<p class="empty">O histórico aparece aqui depois do primeiro registro.</p>';
+          } else {
+            var hr = sortDesc(state.tires)
+              .map(function (e) {
+                var p = isNum(e.pressure) ? fmtNum(e.pressure) + " psi" : "—";
+                return (
+                  "<tr><td>" +
+                  fmtDate(e.date) +
+                  "</td><td>" +
+                  dot(e.brand) +
+                  " " +
+                  esc(tireName(e)) +
+                  "</td><td>" +
+                  trackLabel(e.track) +
+                  '</td><td class="num">' +
+                  fmtNum(e.laps) +
+                  '</td><td class="num">' +
+                  p +
+                  '</td><td class="wrapok">' +
+                  esc(e.obs || "") +
+                  '</td><td><button type="button" class="del" data-kind="tire" data-id="' +
+                  esc(e.id) +
+                  '" aria-label="Apagar registro">Apagar</button></td></tr>'
+                );
+              })
+              .join("");
+            hist.innerHTML =
+              '<table><thead><tr><th>Data</th><th>Pneu</th><th>Pista</th><th class="num">Voltas</th><th class="num">Pressão</th>' +
+              "<th>Obs</th><th></th></tr></thead><tbody>" +
+              hr +
+              "</tbody></table>";
+          }
+        }
+
+        function addTire() {
+          var msg = $("t-msg");
+          msg.textContent = "";
+          var date = $("t-date").value || todayIso();
+          var lapsRaw = $("t-laps").value.trim();
+          var laps = Number(lapsRaw);
+          var pressRaw = $("t-press").value.trim();
+          var press = null;
+          if (lapsRaw === "" || !Number.isInteger(laps) || laps < 0) {
+            msg.textContent =
+              "Informe as voltas como número inteiro, 0 ou mais.";
+            $("t-laps").focus();
+            return;
+          }
+          if (pressRaw !== "") {
+            press = parseDec(pressRaw);
+            if (!isFinite(press) || press <= 0) {
+              msg.textContent =
+                "A pressão deve ser um número maior que zero, ou ficar em branco.";
+              $("t-press").focus();
+              return;
+            }
+          }
+          var sets = setsOf(state.brand);
+          var setName = "";
+          if (sets.indexOf(selSet) === -1) {
+            setName = $("t-setname").value.trim();
+            if (setName) {
+              var low = setName.toLowerCase();
+              var clash = sets.some(function (n) {
+                return setLabel(state.brand, n).toLowerCase() === low;
+              });
+              if (clash) {
+                msg.textContent =
+                  "Já existe um jogo com esse nome nesta marca.";
+                $("t-setname").focus();
+                return;
+              }
+            }
+          }
+          var entry = {
+            id: uid(),
+            date: date,
+            brand: state.brand,
+            set: selSet,
+            setName: setName,
+            track: state.track,
+            laps: laps,
+            pressure: press,
+            obs: $("t-obs").value.trim(),
+          };
+          state.tires.push(entry);
+          save();
+          $("t-laps").value = "";
+          $("t-press").value = "";
+          $("t-obs").value = "";
+          $("t-setname").value = "";
+          renderTires();
+          toast(tireName(entry) + " registrado.");
+        }
+
+        function deleteTire(id) {
+          var e = state.tires.filter(function (x) {
+            return x.id === id;
+          })[0];
+          if (!e) return;
+          if (e.setName) {
+            // preserva o nome personalizado do jogo se ainda houver outros registros dele
+            var rest = state.tires.filter(function (x) {
+              return x.id !== id && x.brand === e.brand && x.set === e.set;
+            });
+            if (
+              rest.length &&
+              !rest.some(function (x) {
+                return x.setName;
+              })
+            )
+              rest[0].setName = e.setName;
+          }
+          state.tires = state.tires.filter(function (x) {
+            return x.id !== id;
+          });
+          save();
+          renderTires();
+        }
+
+        /* ---------- motores: óleo, horas e km ---------- */
+        function motorCycles(m) {
+          return state.cycles.filter(function (c) {
+            return c.motor === m;
+          });
+        }
+        function lastEventDate(cs) {
+          if (!cs.length) return "";
+          var c = cs[cs.length - 1];
+          return c.uses.length ? c.uses[c.uses.length - 1].date : c.changeDate;
+        }
+        function motorTotals(m) {
+          var min = 0,
+            km = 0;
+          motorCycles(m).forEach(function (c) {
+            c.uses.forEach(function (u) {
+              if (isNum(u.min)) min += u.min;
+              if (isNum(u.km)) km += u.km;
+            });
+          });
+          return { min: min, km: Math.round(km * 100) / 100 };
+        }
+        function cycleHK(c) {
+          var min = 0,
+            km = 0;
+          c.uses.forEach(function (u) {
+            if (isNum(u.min)) min += u.min;
+            if (isNum(u.km)) km += u.km;
+          });
+          return [
+            min > 0 ? fmtHM(min) : "—",
+            km > 0 ? fmtNum(Math.round(km * 100) / 100) : "—",
+          ];
+        }
+        function slotX(u) {
+          var p = [];
+          if (isNum(u.min)) p.push(fmtHM(u.min));
+          if (isNum(u.km)) p.push(fmtNum(u.km) + " km");
+          return p.length
+            ? '<span class="slot-x">' + p.join(" · ") + "</span>"
+            : "";
+        }
+        function slotHtml(label, val, extra, cls) {
+          return (
+            '<div class="slot ' +
+            cls +
+            '"><span class="slot-l">' +
+            label +
+            '</span><span class="slot-v">' +
+            val +
+            "</span>" +
+            extra +
+            "</div>"
+          );
+        }
+        function totalLine(m) {
+          var t = motorTotals(m);
+          return t.min > 0 || t.km > 0
+            ? '<p class="motor-total">Total do motor: ' +
+                fmtHM(t.min) +
+                " · " +
+                fmtNum(t.km) +
+                " km</p>"
+            : "";
+        }
+        function hkFields(m) {
+          var a = ' data-motor="' + esc(m) + '" autocomplete="off"';
+          return (
+            '<p class="hk-cap">Horas e km (opcional) · ' +
+            (state.hmode === "total" ? "total acumulado" : "desta sessão") +
+            "</p>" +
+            '<div class="row3">' +
+            '<label>Horas<input type="text" class="o-h" inputmode="numeric" pattern="[0-9]*"' +
+            a +
+            ' placeholder="0"></label>' +
+            '<label>Min<input type="text" class="o-m" inputmode="numeric" pattern="[0-9]*" maxlength="2"' +
+            a +
+            ' placeholder="0"></label>' +
+            '<label>km<input type="text" class="o-k" inputmode="decimal"' +
+            a +
+            ' placeholder="0"></label></div>'
+          );
+        }
+        function motorInput(cls, m) {
+          var els = $("o-list").querySelectorAll("." + cls);
+          for (var i = 0; i < els.length; i++)
+            if (els[i].dataset.motor === m) return els[i];
+          return null;
+        }
+
+        function renderOil() {
+          var host = $("o-list");
+          var out = "";
+          var keep = {};
+          host.querySelectorAll(".o-h, .o-m, .o-k").forEach(function (el) {
+            keep[el.className + "|" + el.dataset.motor] = el.value;
+          });
+
+          state.motors.forEach(function (m) {
+            var cs = motorCycles(m);
+            var cur = cs.length ? cs[cs.length - 1] : null;
+            var n = cur ? cur.uses.length : 0;
+            var status,
+              warn = false,
+              primary,
+              secondary = null;
+            var chg = { act: "change", label: "Registrar troca" };
+            if (!cur) {
+              status = "Sem troca registrada";
+              primary = chg;
+            } else if (n === 0) {
+              status = "Óleo novo · 0 de " + CYCLE_LEN + " usos";
+              primary = { act: "use", label: "Registrar 1° uso" };
+            } else if (n < CYCLE_LEN) {
+              status = "Uso " + n + " de " + CYCLE_LEN;
+              primary = { act: "use", label: "Registrar " + (n + 1) + "° uso" };
+              secondary = chg;
+            } else {
+              warn = true;
+              status =
+                n === CYCLE_LEN
+                  ? "Trocar o óleo"
+                  : "Acima do limite: " + n + " usos";
+              primary = chg;
+              secondary = {
+                act: "use",
+                label: "Registrar " + (n + 1) + "° uso (exceção)",
+              };
+            }
+
+            var slots = slotHtml(
+              "Troca",
+              cur ? fmtDM(cur.changeDate) : "—",
+              "",
+              cur ? "done" : "next",
+            );
+            var count = Math.max(CYCLE_LEN, n);
+            for (var i = 0; i < count; i++) {
+              var u = cur && cur.uses[i];
+              var cls = u
+                ? "done"
+                : cur && i === n && n < CYCLE_LEN
+                  ? "next"
+                  : "empty-s";
+              slots += slotHtml(
+                i + 1 + "° uso",
+                u ? fmtDM(u.date) : "—",
+                u ? slotX(u) : "",
+                cls,
+              );
+            }
+
+            var mAttr = ' data-motor="' + esc(m) + '"';
+            var actions =
+              '<button type="button" class="primary o-act" data-act="' +
+              primary.act +
+              '"' +
+              mAttr +
+              ">" +
+              primary.label +
+              "</button>";
+            var row2 = "";
+            if (secondary)
+              row2 +=
+                '<button type="button" class="ghost grow o-act" data-act="' +
+                secondary.act +
+                '"' +
+                mAttr +
+                ">" +
+                secondary.label +
+                "</button>";
+            if (cur)
+              row2 +=
+                '<button type="button" class="del" data-kind="undo" data-id="' +
+                esc(m) +
+                '">Desfazer último</button>';
+            if (row2) actions += '<div class="actions2">' + row2 + "</div>";
+            var rm = !cs.length
+              ? '<div class="actions2"><button type="button" class="del" data-kind="motor" data-id="' +
+                esc(m) +
+                '">Remover motor</button></div>'
+              : "";
+
+            var obs = cur
+              ? '<label>Observação deste ciclo<input type="text" class="o-obs" maxlength="120" autocomplete="off" data-motor="' +
+                esc(m) +
+                '" value="' +
+                esc(cur.obs || "") +
+                '"></label>'
+              : "";
+
+            var prev = cs.slice(0, -1).reverse();
+            var prevHtml = "";
+            if (prev.length) {
+              var pr = prev
+                .map(function (c) {
+                  var hk = cycleHK(c);
+                  var f = c.uses.length ? fmtDate(c.uses[0].date) : "—";
+                  var l = c.uses.length
+                    ? fmtDate(c.uses[c.uses.length - 1].date)
+                    : "—";
+                  return (
+                    "<tr><td>" +
+                    fmtDate(c.changeDate) +
+                    '</td><td class="num">' +
+                    c.uses.length +
+                    "</td><td>" +
+                    f +
+                    "</td><td>" +
+                    l +
+                    '</td><td class="num">' +
+                    hk[0] +
+                    '</td><td class="num">' +
+                    hk[1] +
+                    '</td><td class="wrapok">' +
+                    esc(c.obs || "") +
+                    "</td></tr>"
+                  );
+                })
+                .join("");
+              prevHtml =
+                "<details><summary>Ciclos anteriores (" +
+                prev.length +
+                ')</summary><div class="scroll"><table><thead><tr>' +
+                '<th>Troca</th><th class="num">Usos</th><th>1° uso</th><th>Último</th><th class="num">Horas</th><th class="num">km</th><th>Obs</th>' +
+                "</tr></thead><tbody>" +
+                pr +
+                "</tbody></table></div></details>";
+            }
+
+            out +=
+              '<article class="card"><div class="card-head"><h2>Motor #' +
+              esc(m) +
+              '</h2><span class="badge' +
+              (warn ? " warn" : "") +
+              '">' +
+              status +
+              '</span></div><div class="slots">' +
+              slots +
+              "</div>" +
+              totalLine(m) +
+              obs +
+              (cur ? hkFields(m) : "") +
+              actions +
+              rm +
+              prevHtml +
+              "</article>";
+          });
+          host.innerHTML =
+            out ||
+            '<div class="card"><p class="empty">Nenhum motor cadastrado. Adicione um abaixo.</p></div>';
+
+          host.querySelectorAll(".o-h, .o-m, .o-k").forEach(function (el) {
+            var v = keep[el.className + "|" + el.dataset.motor];
+            if (v) el.value = v;
+          });
+        }
+
+        function registerOil(m, act) {
+          var msg = $("o-msg");
+          msg.textContent = "";
+          var date = $("o-date").value || todayIso();
+          var cs = motorCycles(m);
+          var last = lastEventDate(cs);
+          if (last && date < last) {
+            msg.textContent =
+              "A data não pode ser anterior ao último registro do motor #" +
+              m +
+              " (" +
+              fmtDate(last) +
+              ").";
+            return;
+          }
+          var cur = cs.length ? cs[cs.length - 1] : null;
+          var hEl = motorInput("o-h", m),
+            mEl = motorInput("o-m", m),
+            kEl = motorInput("o-k", m);
+          var hRaw = hEl ? hEl.value.trim() : "",
+            mRaw = mEl ? mEl.value.trim() : "",
+            kRaw = kEl ? kEl.value.trim() : "";
+
+          if (act === "change") {
+            if (hRaw || mRaw || kRaw) {
+              msg.textContent =
+                "Horas e km são registrados nos usos, não na troca. Limpe os campos para registrar a troca.";
+              return;
+            }
+            state.cycles.push({
+              id: uid(),
+              motor: m,
+              changeDate: date,
+              uses: [],
+              obs: "",
+            });
+            toast("Troca de óleo do motor #" + m + " registrada.");
+          } else {
+            if (!cur) return;
+            var tot = motorTotals(m),
+              minVal = null,
+              kmVal = null;
+            if (hRaw !== "" || mRaw !== "") {
+              if (!/^\d*$/.test(hRaw) || !/^\d*$/.test(mRaw)) {
+                msg.textContent = "Horas e minutos devem ser números inteiros.";
+                return;
+              }
+              if (mRaw !== "" && Number(mRaw) > 59) {
+                msg.textContent = "Os minutos devem ficar entre 0 e 59.";
+                return;
+              }
+              var mins =
+                (hRaw === "" ? 0 : Number(hRaw)) * 60 +
+                (mRaw === "" ? 0 : Number(mRaw));
+              if (state.hmode === "total") {
+                if (mins < tot.min) {
+                  msg.textContent =
+                    "O total de horas informado (" +
+                    fmtHM(mins) +
+                    ") é menor que o já registrado (" +
+                    fmtHM(tot.min) +
+                    ").";
+                  return;
+                }
+                mins -= tot.min;
+              }
+              minVal = mins;
+            }
+            if (kRaw !== "") {
+              var kv = parseNonNeg(kRaw);
+              if (!isFinite(kv)) {
+                msg.textContent =
+                  "km inválido. Use um número, como 12 ou 12,5.";
+                return;
+              }
+              if (state.hmode === "total") {
+                if (kv + 0.005 < tot.km) {
+                  msg.textContent =
+                    "O total de km informado (" +
+                    fmtNum(kv) +
+                    ") é menor que o já registrado (" +
+                    fmtNum(tot.km) +
+                    ").";
+                  return;
+                }
+                kv = Math.max(0, kv - tot.km);
+              }
+              kmVal = Math.round(kv * 100) / 100;
+            }
+            cur.uses.push({ date: date, min: minVal, km: kmVal });
+            toast(
+              cur.uses.length +
+                "° uso do motor #" +
+                m +
+                " registrado" +
+                (cur.uses.length > CYCLE_LEN ? " (acima do limite)." : "."),
+            );
+          }
+          if (hEl) hEl.value = "";
+          if (mEl) mEl.value = "";
+          if (kEl) kEl.value = "";
+          save();
+          renderOil();
+        }
+
+        function undoOil(m) {
+          var cs = motorCycles(m);
+          if (!cs.length) return;
+          var cur = cs[cs.length - 1];
+          if (cur.uses.length) cur.uses.pop();
+          else
+            state.cycles = state.cycles.filter(function (c) {
+              return c.id !== cur.id;
+            });
+          save();
+          renderOil();
+        }
+
+        function addMotor() {
+          $("o-msg").textContent = "";
+          var label = $("m-new").value.trim().replace(/^#/, "").toUpperCase();
+          if (!label) {
+            toast("Informe o número do motor.");
+            $("m-new").focus();
+            return;
+          }
+          if (state.motors.indexOf(label) !== -1) {
+            toast("O motor #" + label + " já existe.");
+            return;
+          }
+          state.motors.push(label);
+          $("m-new").value = "";
+          save();
+          renderOil();
+          toast("Motor #" + label + " adicionado.");
+        }
+
+        /* ---------- estoque ---------- */
+        var manageStock = false,
+          editingId = null,
+          editItemId = null,
+          editGearId = null,
+          focusEdit = false;
+        var DEFAULT_UNITS = ["Latas", "Unidades", "Pacotes", "Litros"];
+        function r2(n) {
+          return Math.round(n * 100) / 100;
+        }
+        function findItem(id) {
+          return (
+            state.stock.filter(function (i) {
+              return i.id === id;
+            })[0] || null
+          );
+        }
+
+        function unitList() {
+          var seen = {},
+            out = [];
+          DEFAULT_UNITS.concat(
+            state.stock.map(function (i) {
+              return i.unit;
+            }),
+          ).forEach(function (u) {
+            var k = String(u).toLowerCase();
+            if (u && !seen[k]) {
+              seen[k] = 1;
+              out.push(u);
+            }
+          });
+          return out;
+        }
+        function unitChipsHtml(inEditor) {
+          return unitList()
+            .map(function (u) {
+              return (
+                '<button type="button" class="chip"' +
+                (inEditor ? ' data-sact="uchip"' : "") +
+                ' data-unit="' +
+                esc(u) +
+                '">' +
+                esc(u) +
+                "</button>"
+              );
+            })
+            .join("");
+        }
+
+        function renderStock() {
+          var list = $("s-list");
+          var en = list.querySelector(".se-name"),
+            eu = list.querySelector(".se-unit");
+          var draft =
+            en && eu && editItemId && en.dataset.id === editItemId
+              ? { n: en.value, u: eu.value }
+              : null;
+          var html = state.stock
+            .map(function (it) {
+              var id = esc(it.id),
+                nm = esc(it.name);
+              if (editItemId === it.id) {
+                return (
+                  '<li class="srow editing"><div class="sedit">' +
+                  '<label>Nome<input type="text" class="se-name" data-id="' +
+                  id +
+                  '" maxlength="40" autocomplete="off" value="' +
+                  nm +
+                  '"></label>' +
+                  '<label>Unidade<input type="text" class="se-unit" data-id="' +
+                  id +
+                  '" maxlength="12" autocomplete="off" value="' +
+                  esc(it.unit) +
+                  '"></label>' +
+                  '<div class="chips">' +
+                  unitChipsHtml(true) +
+                  "</div>" +
+                  '<p class="msg se-msg" role="alert"></p>' +
+                  '<div class="actions2"><button type="button" class="primary" data-sact="save" data-id="' +
+                  id +
+                  '">Salvar</button>' +
+                  '<button type="button" class="ghost grow" data-sact="cancel" data-id="' +
+                  id +
+                  '">Cancelar</button></div></div></li>'
+                );
+              }
+              var qty =
+                editingId === it.id
+                  ? '<input type="text" class="sqty-in" data-id="' +
+                    id +
+                    '" inputmode="decimal" autocomplete="off" aria-label="Quantidade de ' +
+                    nm +
+                    '" value="' +
+                    esc(String(it.qty).replace(".", ",")) +
+                    '">'
+                  : '<button type="button" class="sqty" data-sact="edit" data-id="' +
+                    id +
+                    '" aria-label="Ajustar quantidade de ' +
+                    nm +
+                    '">' +
+                    fmtNum(it.qty) +
+                    "</button>";
+              var meta =
+                esc(it.unit) +
+                (it.updated ? " · atualizado " + fmtDM(it.updated) : "");
+              return (
+                '<li class="srow"><div class="sinfo"><span class="sname">' +
+                nm +
+                '</span><span class="smeta">' +
+                meta +
+                "</span></div>" +
+                '<div class="sctl"><button type="button" class="step" data-sact="dec" data-id="' +
+                id +
+                '" aria-label="Retirar 1 de ' +
+                nm +
+                '">−1</button>' +
+                qty +
+                '<button type="button" class="step plus" data-sact="inc" data-id="' +
+                id +
+                '" aria-label="Adicionar 1 de ' +
+                nm +
+                '">+1</button></div>' +
+                (manageStock
+                  ? '<div class="srow-tools"><button type="button" class="ghost grow" data-sact="editrow" data-id="' +
+                    id +
+                    '" aria-label="Editar ' +
+                    nm +
+                    '">Editar</button>' +
+                    '<button type="button" class="del" data-kind="stock" data-id="' +
+                    id +
+                    '">Remover</button></div>'
+                  : "") +
+                "</li>"
+              );
+            })
+            .join("");
+          list.innerHTML =
+            html ||
+            '<li class="empty">Nenhum consumível cadastrado. Adicione um abaixo.</li>';
+          $("s-units").innerHTML = unitChipsHtml(false);
+          $("s-manage").textContent = manageStock ? "Concluir" : "Editar lista";
+          if (editItemId) {
+            var n2 = list.querySelector(".se-name"),
+              u2 = list.querySelector(".se-unit");
+            if (n2 && u2 && draft) {
+              n2.value = draft.n;
+              u2.value = draft.u;
+            }
+            if (n2 && focusEdit) {
+              n2.focus();
+              n2.select();
+            }
+          }
+          focusEdit = false;
+          if (editingId) {
+            var inp = list.querySelector(".sqty-in");
+            if (inp) {
+              inp.focus();
+              inp.select();
+            }
+          }
+        }
+
+        function saveItem(id, li) {
+          var it = findItem(id);
+          if (!it || !li) return;
+          var n = li.querySelector(".se-name"),
+            u = li.querySelector(".se-unit"),
+            msg = li.querySelector(".se-msg");
+          var name = n.value.trim(),
+            unit = u.value.trim();
+          if (!name) {
+            msg.textContent = "Informe o nome do item.";
+            n.focus();
+            return;
+          }
+          if (!unit) {
+            msg.textContent =
+              "Informe a unidade (Latas, Unidades, Pacotes, Litros...).";
+            u.focus();
+            return;
+          }
+          var low = name.toLowerCase();
+          if (
+            state.stock.some(function (i) {
+              return i.id !== id && i.name.toLowerCase() === low;
+            })
+          ) {
+            msg.textContent = "Já existe um item com esse nome.";
+            n.focus();
+            return;
+          }
+          var changed = name !== it.name || unit !== it.unit;
+          it.name = name;
+          it.unit = unit;
+          editItemId = null;
+          if (changed) save();
+          renderStock();
+          if (changed) toast(name + " atualizado.");
+        }
+
+        function bumpStock(id, delta) {
+          var it = findItem(id);
+          if (!it) return;
+          editingId = null;
+          var next = r2(Math.max(0, it.qty + delta));
+          if (next === it.qty) {
+            renderStock();
+            toast(it.name + " já está em 0.");
+            return;
+          }
+          it.qty = next;
+          it.updated = todayIso();
+          save();
+          renderStock();
+        }
+
+        function commitQty(input) {
+          var id = input.dataset.id;
+          if (editingId !== id) return;
+          editingId = null;
+          var it = findItem(id);
+          var raw = input.value.trim();
+          if (it) {
+            var v = parseNonNeg(raw);
+            if (raw === "" || !isFinite(v))
+              toast("Quantidade inválida. Use um número, como 12 ou 12,5.");
+            else if (r2(v) !== it.qty) {
+              it.qty = r2(v);
+              it.updated = todayIso();
+              save();
+            }
+          }
+          renderStock();
+        }
+
+        function addStock() {
+          var msg = $("s-msg");
+          msg.textContent = "";
+          var name = $("s-name").value.trim(),
+            unit = $("s-unit").value.trim(),
+            raw = $("s-qty").value.trim();
+          if (!name) {
+            msg.textContent = "Informe o nome do item.";
+            $("s-name").focus();
+            return;
+          }
+          if (!unit) {
+            msg.textContent =
+              "Informe a unidade (Latas, Unidades, Pacotes, Litros...).";
+            $("s-unit").focus();
+            return;
+          }
+          var qty = 0;
+          if (raw !== "") {
+            qty = parseNonNeg(raw);
+            if (!isFinite(qty)) {
+              msg.textContent =
+                "A quantidade deve ser um número, como 4 ou 2,5.";
+              $("s-qty").focus();
+              return;
+            }
+          }
+          var low = name.toLowerCase();
+          if (
+            state.stock.some(function (i) {
+              return i.name.toLowerCase() === low;
+            })
+          ) {
+            msg.textContent = "Já existe um item com esse nome.";
+            $("s-name").focus();
+            return;
+          }
+          state.stock.push({
+            id: uid(),
+            name: name,
+            unit: unit,
+            qty: r2(qty),
+            updated: qty > 0 ? todayIso() : "",
+          });
+          save();
+          $("s-name").value = "";
+          $("s-unit").value = "";
+          $("s-qty").value = "";
+          renderStock();
+          toast(name + " adicionado ao estoque.");
+        }
+
+        function renderGear() {
+          var gs = state.gear.slice().sort(function (a, b) {
+            return (
+              a.name.localeCompare(b.name, "pt-BR") ||
+              a.ident.localeCompare(b.ident, "pt-BR")
+            );
+          });
+          if (!gs.length) {
+            $("g-list").innerHTML =
+              '<p class="empty">Nenhum equipamento cadastrado. Adicione um abaixo.</p>';
+            return;
+          }
+          var rows = gs
+            .map(function (g) {
+              return (
+                "<tr" +
+                (g.id === editGearId ? ' class="editing"' : "") +
+                "><td>" +
+                esc(g.name) +
+                "</td><td>" +
+                (g.ident ? esc(g.ident) : "—") +
+                '</td><td class="wrapok">' +
+                esc(g.obs) +
+                '</td><td><div class="row-actions">' +
+                '<button type="button" class="ghost" data-gedit="' +
+                esc(g.id) +
+                '" aria-label="Editar equipamento">Editar</button>' +
+                '<button type="button" class="del" data-kind="gear" data-id="' +
+                esc(g.id) +
+                '" aria-label="Apagar equipamento">Apagar</button></div></td></tr>'
+              );
+            })
+            .join("");
+          $("g-list").innerHTML =
+            "<table><thead><tr><th>Equipamento</th><th>Identificador</th><th>Obs</th><th></th></tr></thead><tbody>" +
+            rows +
+            "</tbody></table>";
+        }
+
+        function resetGearForm() {
+          editGearId = null;
+          $("g-name").value = "";
+          $("g-ident").value = "";
+          $("g-obs").value = "";
+          $("g-form-title").textContent = "Novo equipamento";
+          $("g-add").textContent = "Adicionar equipamento";
+          $("g-cancel").hidden = true;
+          $("g-msg").textContent = "";
+        }
+
+        function startGearEdit(id) {
+          var g = state.gear.filter(function (x) {
+            return x.id === id;
+          })[0];
+          if (!g) return;
+          editGearId = id;
+          $("g-name").value = g.name;
+          $("g-ident").value = g.ident;
+          $("g-obs").value = g.obs;
+          $("g-form-title").textContent = "Editar equipamento";
+          $("g-add").textContent = "Salvar alterações";
+          $("g-cancel").hidden = false;
+          $("g-msg").textContent = "";
+          renderGear();
+          var t = $("g-form-title");
+          if (t.scrollIntoView) t.scrollIntoView({ block: "center" });
+          $("g-name").focus();
+        }
+
+        function addGear() {
+          var msg = $("g-msg");
+          msg.textContent = "";
+          var name = $("g-name").value.trim(),
+            ident = $("g-ident").value.trim(),
+            obs = $("g-obs").value.trim();
+          if (!name) {
+            msg.textContent = "Informe o nome do equipamento.";
+            $("g-name").focus();
+            return;
+          }
+          var key = (name + "|" + ident).toLowerCase();
+          if (
+            state.gear.some(function (g) {
+              return (
+                g.id !== editGearId &&
+                (g.name + "|" + g.ident).toLowerCase() === key
+              );
+            })
+          ) {
+            msg.textContent =
+              "Já existe um equipamento com esse nome e identificador.";
+            return;
+          }
+          if (editGearId) {
+            var cur = state.gear.filter(function (x) {
+              return x.id === editGearId;
+            })[0];
+            if (cur) {
+              cur.name = name;
+              cur.ident = ident;
+              cur.obs = obs;
+            }
+            save();
+            resetGearForm();
+            renderGear();
+            toast(name + " atualizado.");
+            return;
+          }
+          state.gear.push({ id: uid(), name: name, ident: ident, obs: obs });
+          save();
+          $("g-name").value = "";
+          $("g-ident").value = "";
+          $("g-obs").value = "";
+          renderGear();
+          toast(name + (ident ? " " + ident : "") + " adicionado.");
+        }
+
+        function setSview(v) {
+          state.sview = v;
+          var b = $("s-view").querySelectorAll("button");
+          for (var i = 0; i < b.length; i++)
+            b[i].setAttribute("aria-pressed", String(b[i].dataset.view === v));
+          $("s-cons").hidden = v !== "cons";
+          $("s-equip").hidden = v !== "equip";
+          save();
+        }
+
+        /* ---------- confirmação em dois toques ---------- */
+        document.addEventListener("click", function (ev) {
+          var t = ev.target.closest && ev.target.closest("[data-kind]");
+          if (!t) return;
+          if (t.dataset.armed !== "1") {
+            var label = t.textContent;
+            t.dataset.armed = "1";
+            t.textContent = "Confirmar";
+            setTimeout(function () {
+              if (t.isConnected) {
+                t.dataset.armed = "0";
+                t.textContent = label;
+              }
+            }, 3000);
+            return;
+          }
+          var kind = t.dataset.kind,
+            id = t.dataset.id;
+          if (kind === "tire") deleteTire(id);
+          else if (kind === "undo") undoOil(id);
+          else if (kind === "stock") {
+            state.stock = state.stock.filter(function (i) {
+              return i.id !== id;
+            });
+            if (editItemId === id) editItemId = null;
+            save();
+            renderStock();
+          } else if (kind === "gear") {
+            state.gear = state.gear.filter(function (g) {
+              return g.id !== id;
+            });
+            if (editGearId === id) resetGearForm();
+            save();
+            renderGear();
+          } else if (kind === "motor") {
+            state.motors = state.motors.filter(function (x) {
+              return x !== id;
+            });
+            save();
+            renderOil();
+          }
+        });
+
+        /* ---------- exportação CSV ---------- */
+        function csvText(v) {
+          var s = String(v);
+          if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+          if (/[;"\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+          return s;
+        }
+        function csvNum(n) {
+          return String(n).replace(".", ",");
+        }
+        function r4(n) {
+          return Math.round(n * 10000) / 10000;
+        }
+
+        function buildCsv(kind) {
+          var lines;
+          if (kind === "tires") {
+            lines = ["Data;Marca;Jogo;Pista;Voltas;Pressão (psi);Obs"];
+            sortAsc(state.tires).forEach(function (e) {
+              lines.push(
+                [
+                  fmtDate(e.date),
+                  csvText(e.brand),
+                  csvText(setLabel(e.brand, e.set)),
+                  e.track ? trackLabel(e.track) : "",
+                  e.laps,
+                  isNum(e.pressure) ? csvNum(e.pressure) : "",
+                  csvText(e.obs || ""),
+                ].join(";"),
+              );
+            });
+          } else if (kind === "oil") {
+            lines = [
+              "Motor;Ciclo;Evento;Data;Horas (decimal);km;Horas acumuladas;km acumulados;Obs do ciclo",
+            ];
+            state.motors.forEach(function (m) {
+              var cs = motorCycles(m),
+                am = 0,
+                ak = 0;
+              cs.forEach(function (c, ci) {
+                lines.push(
+                  [
+                    csvText("#" + m),
+                    ci + 1,
+                    "Troca",
+                    fmtDate(c.changeDate),
+                    "",
+                    "",
+                    csvNum(r4(am / 60)),
+                    csvNum(Math.round(ak * 100) / 100),
+                    csvText(c.obs || ""),
+                  ].join(";"),
+                );
+                c.uses.forEach(function (u, i) {
+                  if (isNum(u.min)) am += u.min;
+                  if (isNum(u.km)) ak += u.km;
+                  lines.push(
+                    [
+                      csvText("#" + m),
+                      ci + 1,
+                      i + 1 + "° uso",
+                      fmtDate(u.date),
+                      isNum(u.min) ? csvNum(r4(u.min / 60)) : "",
+                      isNum(u.km) ? csvNum(u.km) : "",
+                      csvNum(r4(am / 60)),
+                      csvNum(Math.round(ak * 100) / 100),
+                      "",
+                    ].join(";"),
+                  );
+                });
+              });
+              if (cs.length)
+                lines.push(
+                  [
+                    csvText("#" + m),
+                    "TOTAL",
+                    "",
+                    "",
+                    csvNum(r4(am / 60)),
+                    csvNum(Math.round(ak * 100) / 100),
+                    "",
+                    "",
+                    "",
+                  ].join(";"),
+                );
+            });
+          }
+          if (kind === "stock") {
+            lines = ["Item;Unidade;Quantidade;Atualizado em"];
+            state.stock.forEach(function (i) {
+              lines.push(
+                [
+                  csvText(i.name),
+                  csvText(i.unit),
+                  csvNum(i.qty),
+                  i.updated ? fmtDate(i.updated) : "",
+                ].join(";"),
+              );
+            });
+          } else if (kind === "gear") {
+            lines = ["Equipamento;Identificador;Observação"];
+            state.gear.forEach(function (g) {
+              lines.push(
+                [csvText(g.name), csvText(g.ident), csvText(g.obs)].join(";"),
+              );
+            });
+          }
+          return "\ufeff" + lines.join("\r\n") + "\r\n";
+        }
+
+        function saveFile(name, text, mime) {
+          if (dl) return dl.save({ filename: name, data: text });
+          return new Promise(function (resolve, reject) {
+            try {
+              var blob = new Blob([text], {
+                type: mime || "text/plain;charset=utf-8",
+              });
+              var url = URL.createObjectURL(blob);
+              var a = document.createElement("a");
+              a.href = url;
+              a.download = name;
+              a.style.display = "none";
+              document.body.appendChild(a);
+              a.click();
+              setTimeout(function () {
+                URL.revokeObjectURL(url);
+                if (a.remove) a.remove();
+              }, 1500);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }
+
+        function exportCsv(kind) {
+          var empty = {
+            tires: !state.tires.length,
+            oil: !state.cycles.length,
+            stock: !state.stock.length,
+            gear: !state.gear.length,
+          }[kind];
+          if (empty) {
+            toast("Ainda não há registros para exportar.");
+            return;
+          }
+          var name =
+            {
+              tires: "pneus-",
+              oil: "motores-",
+              stock: "estoque-",
+              gear: "equipamentos-",
+            }[kind] +
+            todayIso() +
+            ".csv";
+          saveFile(name, buildCsv(kind), "text/csv;charset=utf-8")
+            .then(function () {
+              toast("Arquivo " + name + " gerado. Veja a pasta Downloads.");
+            })
+            .catch(function (err) {
+              if (err && err.code === "declined") return;
+              toast("Não foi possível exportar o arquivo.");
+            });
+        }
+
+        /* ---------- backup e restauração (JSON) ---------- */
+        var bmode = "merge",
+          pendingImport = null,
+          armedReplace = false;
+
+        function backupData() {
+          return {
+            motors: state.motors,
+            cycles: state.cycles,
+            tires: state.tires,
+            stock: state.stock,
+            gear: state.gear,
+          };
+        }
+        function importSummary(s) {
+          return (
+            (s.tires || []).length +
+            " registros de pneu, " +
+            (s.cycles || []).length +
+            " ciclos de óleo, " +
+            (s.stock || []).length +
+            " consumíveis e " +
+            (s.gear || []).length +
+            " equipamentos"
+          );
+        }
+        function renderBackupInfo() {
+          $("b-last").textContent = state.lastBackup
+            ? "Último backup: " + fmtDate(state.lastBackup) + "."
+            : "Nenhum backup feito ainda.";
+          $("b-modehint").textContent =
+            bmode === "merge"
+              ? "Mesclar adiciona só os registros que ainda não existem neste aparelho. Edições e exclusões feitas depois do backup não são reconciliadas."
+              : "Substituir tudo apaga os dados atuais deste aparelho e usa somente o conteúdo do arquivo.";
+          var bs = $("bmode-seg").querySelectorAll("button");
+          for (var i = 0; i < bs.length; i++)
+            bs[i].setAttribute(
+              "aria-pressed",
+              String(bs[i].dataset.bmode === bmode),
+            );
+          $("b-pending").hidden = !pendingImport;
+          if (pendingImport) {
+            $("b-summary").textContent =
+              "Arquivo válido com " + importSummary(pendingImport) + ".";
+            $("b-apply").textContent =
+              bmode === "merge"
+                ? "Mesclar"
+                : armedReplace
+                  ? "Confirmar: apagar dados atuais"
+                  : "Substituir tudo";
+          }
+        }
+
+        function exportBackup() {
+          var obj = {
+            app: "desgaste-kart",
+            schema: 2,
+            exportedAt: new Date().toISOString(),
+            data: backupData(),
+          };
+          var name = "desgaste-kart-backup-" + todayIso() + ".json";
+          saveFile(name, JSON.stringify(obj, null, 2), "application/json")
+            .then(function () {
+              state.lastBackup = todayIso();
+              save();
+              renderBackupInfo();
+              toast("Backup " + name + " gerado. Veja a pasta Downloads.");
+            })
+            .catch(function (err) {
+              if (err && err.code === "declined") return;
+              toast("Não foi possível exportar o backup.");
+            });
+        }
+
+        function readBackupFile(file) {
+          var msg = $("b-msg");
+          msg.textContent = "";
+          pendingImport = null;
+          armedReplace = false;
+          if (!file) {
+            renderBackupInfo();
+            return;
+          }
+          if (file.size > 5 * 1024 * 1024) {
+            msg.textContent =
+              "Arquivo grande demais para ser um backup deste app.";
+            renderBackupInfo();
+            return;
+          }
+          var r = new FileReader();
+          r.onload = function () {
+            try {
+              var obj = JSON.parse(String(r.result).replace(/^\ufeff/, ""));
+              if (
+                !obj ||
+                obj.app !== "desgaste-kart" ||
+                !obj.data ||
+                typeof obj.data !== "object"
+              )
+                throw new Error("formato");
+              var s = sanitize(obj.data);
+              if (!s.tires && !s.cycles && !s.stock && !s.gear)
+                throw new Error("vazio");
+              pendingImport = s;
+            } catch (e) {
+              msg.textContent =
+                "Este arquivo não parece ser um backup do Desgaste do kart.";
+            }
+            renderBackupInfo();
+          };
+          r.onerror = function () {
+            msg.textContent = "Não foi possível ler o arquivo.";
+            renderBackupInfo();
+          };
+          r.readAsText(file);
+        }
+
+        function mergeById(local, incoming) {
+          var seen = {},
+            added = 0;
+          local.forEach(function (x) {
+            seen[x.id] = 1;
+          });
+          incoming.forEach(function (x) {
+            if (!seen[x.id]) {
+              seen[x.id] = 1;
+              local.push(x);
+              added++;
+            }
+          });
+          return added;
+        }
+
+        function applyImport() {
+          if (!pendingImport) return;
+          var s = pendingImport,
+            report;
+          if (bmode === "replace") {
+            if (!armedReplace) {
+              armedReplace = true;
+              renderBackupInfo();
+              setTimeout(function () {
+                if (armedReplace) {
+                  armedReplace = false;
+                  renderBackupInfo();
+                }
+              }, 4000);
+              return;
+            }
+            state.tires = s.tires || [];
+            state.cycles = s.cycles || [];
+            state.stock = s.stock || [];
+            state.gear = s.gear || [];
+            if (s.motors && s.motors.length) state.motors = s.motors;
+            report = "Dados substituídos pelo conteúdo do backup.";
+          } else {
+            var n = {
+              tires: mergeById(state.tires, s.tires || []),
+              cycles: mergeById(state.cycles, s.cycles || []),
+              stock: mergeById(state.stock, s.stock || []),
+              gear: mergeById(state.gear, s.gear || []),
+            };
+            (s.motors || []).forEach(function (m) {
+              if (state.motors.indexOf(m) === -1) state.motors.push(m);
+            });
+            report =
+              "Mesclado: " +
+              n.tires +
+              " pneus, " +
+              n.cycles +
+              " ciclos, " +
+              n.stock +
+              " consumíveis e " +
+              n.gear +
+              " equipamentos novos.";
+          }
+          state.cycles.forEach(function (c) {
+            if (state.motors.indexOf(c.motor) === -1)
+              state.motors.push(c.motor);
+          });
+          state.cycles = state.cycles
+            .map(function (c, i) {
+              return [c, i];
+            })
+            .sort(function (a, b) {
+              return (
+                a[0].changeDate.localeCompare(b[0].changeDate) || a[1] - b[1]
+              );
+            })
+            .map(function (x) {
+              return x[0];
+            });
+          editItemId = null;
+          editingId = null;
+          manageStock = false;
+          resetGearForm();
+          pendingImport = null;
+          armedReplace = false;
+          selSet = lastSetOf(state.brand);
+          save();
+          renderTires();
+          renderOil();
+          renderStock();
+          renderGear();
+          renderBackupInfo();
+          $("b-msg").textContent = "";
+          toast(report);
+        }
+
+        /* ---------- abas e modo de horas ---------- */
+        function setTab(tab) {
+          state.tab = tab;
+          ["pneus", "oleo", "estoque"].forEach(function (t) {
+            $("tab-" + t).setAttribute("aria-selected", String(t === tab));
+            $("panel-" + t).hidden = t !== tab;
+          });
+          save();
+        }
+        function setHmode(md) {
+          state.hmode = md;
+          var b = $("hmode-seg").querySelectorAll("button");
+          for (var i = 0; i < b.length; i++)
+            b[i].setAttribute("aria-pressed", String(b[i].dataset.mode === md));
+          save();
+        }
+
+        /* ---------- início ---------- */
+        load();
+        selSet = lastSetOf(state.brand);
+        $("t-date").value = todayIso();
+        $("o-date").value = todayIso();
+        setHmode(state.hmode);
+        setTab(state.tab);
+        renderTires();
+        renderOil();
+        setSview(state.sview);
+        renderStock();
+        renderGear();
+        renderBackupInfo();
+
+        $("tab-pneus").addEventListener("click", function () {
+          setTab("pneus");
+        });
+        $("tab-oleo").addEventListener("click", function () {
+          setTab("oleo");
+        });
+        $("tab-estoque").addEventListener("click", function () {
+          setTab("estoque");
+        });
+        $("s-view").addEventListener("click", function (e) {
+          var b = e.target.closest("button");
+          if (b) setSview(b.dataset.view);
+        });
+        $("s-manage").addEventListener("click", function () {
+          manageStock = !manageStock;
+          editingId = null;
+          editItemId = null;
+          renderStock();
+        });
+        $("s-list").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-sact]");
+          if (!b) return;
+          var a = b.dataset.sact,
+            id = b.dataset.id;
+          if (a === "inc") bumpStock(id, 1);
+          else if (a === "dec") bumpStock(id, -1);
+          else if (a === "edit") {
+            editingId = id;
+            renderStock();
+          } else if (a === "editrow") {
+            editItemId = id;
+            editingId = null;
+            focusEdit = true;
+            renderStock();
+          } else if (a === "cancel") {
+            editItemId = null;
+            renderStock();
+          } else if (a === "save") saveItem(id, b.closest("li"));
+          else if (a === "uchip") {
+            var ui = b.closest("li").querySelector(".se-unit");
+            if (ui) ui.value = b.dataset.unit;
+          }
+        });
+        $("s-list").addEventListener("keydown", function (e) {
+          var t = e.target;
+          if (!t.classList) return;
+          if (t.classList.contains("sqty-in")) {
+            if (e.key === "Enter") commitQty(t);
+            else if (e.key === "Escape") {
+              editingId = null;
+              renderStock();
+            }
+          } else if (
+            t.classList.contains("se-name") ||
+            t.classList.contains("se-unit")
+          ) {
+            if (e.key === "Enter") saveItem(t.dataset.id, t.closest("li"));
+            else if (e.key === "Escape") {
+              editItemId = null;
+              renderStock();
+            }
+          }
+        });
+        $("s-list").addEventListener("focusout", function (e) {
+          if (e.target.classList && e.target.classList.contains("sqty-in"))
+            commitQty(e.target);
+        });
+        $("s-units").addEventListener("click", function (e) {
+          var b = e.target.closest("button");
+          if (b) $("s-unit").value = b.dataset.unit;
+        });
+        $("s-add").addEventListener("click", addStock);
+        ["s-name", "s-unit", "s-qty"].forEach(function (id) {
+          $(id).addEventListener("keydown", function (e) {
+            if (e.key === "Enter") addStock();
+          });
+        });
+        $("g-add").addEventListener("click", addGear);
+        $("g-cancel").addEventListener("click", function () {
+          resetGearForm();
+          renderGear();
+        });
+        $("g-list").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-gedit]");
+          if (b) startGearEdit(b.dataset.gedit);
+        });
+        ["g-name", "g-ident", "g-obs"].forEach(function (id) {
+          $(id).addEventListener("keydown", function (e) {
+            if (e.key === "Enter") addGear();
+          });
+        });
+        $("s-export").addEventListener("click", function () {
+          exportCsv("stock");
+        });
+        $("g-export").addEventListener("click", function () {
+          exportCsv("gear");
+        });
+        $("t-brands").addEventListener("click", function (e) {
+          var b = e.target.closest("button");
+          if (!b) return;
+          state.brand = b.dataset.brand;
+          selSet = lastSetOf(state.brand);
+          $("t-setname").value = "";
+          save();
+          renderTireForm();
+        });
+        $("t-sets").addEventListener("click", function (e) {
+          var b = e.target.closest("button");
+          if (!b) return;
+          selSet = Number(b.dataset.set);
+          $("t-setname").value = "";
+          renderTireForm();
+        });
+        $("t-track").addEventListener("click", function (e) {
+          var b = e.target.closest("button");
+          if (!b) return;
+          state.track = b.dataset.track;
+          save();
+          renderTireForm();
+        });
+        $("hmode-seg").addEventListener("click", function (e) {
+          var b = e.target.closest("button");
+          if (!b) return;
+          setHmode(b.dataset.mode);
+          renderOil();
+        });
+        $("t-add").addEventListener("click", addTire);
+        ["t-laps", "t-press", "t-obs", "t-setname"].forEach(function (id) {
+          $(id).addEventListener("keydown", function (e) {
+            if (e.key === "Enter") addTire();
+          });
+        });
+        $("o-list").addEventListener("click", function (e) {
+          var b = e.target.closest(".o-act");
+          if (b) registerOil(b.dataset.motor, b.dataset.act);
+        });
+        $("o-list").addEventListener("change", function (e) {
+          var t = e.target;
+          if (t.classList && t.classList.contains("o-obs")) {
+            var cs = motorCycles(t.dataset.motor);
+            if (cs.length) {
+              cs[cs.length - 1].obs = t.value.trim();
+              save();
+            }
+          }
+        });
+        $("m-add").addEventListener("click", addMotor);
+        $("m-new").addEventListener("keydown", function (e) {
+          if (e.key === "Enter") addMotor();
+        });
+        $("b-export").addEventListener("click", exportBackup);
+        $("b-pick").addEventListener("click", function () {
+          $("b-file").value = "";
+          $("b-file").click();
+        });
+        $("b-file").addEventListener("change", function () {
+          readBackupFile(this.files && this.files[0]);
+        });
+        $("bmode-seg").addEventListener("click", function (e) {
+          var b = e.target.closest("button");
+          if (!b) return;
+          bmode = b.dataset.bmode;
+          armedReplace = false;
+          renderBackupInfo();
+        });
+        $("b-apply").addEventListener("click", applyImport);
+        $("b-cancel").addEventListener("click", function () {
+          pendingImport = null;
+          armedReplace = false;
+          $("b-msg").textContent = "";
+          renderBackupInfo();
+        });
+        $("t-export").addEventListener("click", function () {
+          exportCsv("tires");
+        });
+        $("o-export").addEventListener("click", function () {
+          exportCsv("oil");
+        });
+
+        // pede ao navegador para não descartar os dados salvos quando o espaço estiver baixo
+        try {
+          if (navigator.storage && navigator.storage.persist)
+            Promise.resolve(navigator.storage.persist()).catch(function () {});
+        } catch (e) {
+          /* ignora */
+        }
+        // offline: registra o service worker (só no site publicado, nunca dentro do Claude)
+        if (
+          !window.claude &&
+          "serviceWorker" in navigator &&
+          location.protocol === "https:"
+        ) {
+          window.addEventListener("load", function () {
+            navigator.serviceWorker.register("sw.js").catch(function () {
+              /* ignora */
+            });
+          });
+        }
+
+        try {
+          if (window.claude && typeof window.claude.use === "function") {
+            window.claude
+              .use("downloads")
+              .then(function (ns) {
+                dl = ns || null;
+              })
+              .catch(function () {
+                dl = null;
+              });
+          }
+        } catch (e) {
+          dl = null;
+        }
+      })();
+    </script>
+  </body>
+</html>
