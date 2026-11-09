@@ -150,7 +150,7 @@
       }
       .tabs {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 4px;
         margin: 18px 0;
         padding: 4px;
@@ -164,8 +164,9 @@
         border-radius: 9px;
         background: transparent;
         color: var(--muted);
-        font: 600 17px var(--body);
+        font: 600 15px var(--body);
         cursor: pointer;
+        padding: 0 4px;
       }
       .tabs button[aria-selected="true"] {
         background: var(--surface);
@@ -174,6 +175,7 @@
       }
       button:focus-visible,
       input:focus-visible,
+      select:focus-visible,
       summary:focus-visible {
         outline: 3px solid var(--accent);
         outline-offset: 2px;
@@ -191,6 +193,12 @@
         justify-content: space-between;
         gap: 12px;
         margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      .card-title-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         flex-wrap: wrap;
       }
       h2 {
@@ -213,7 +221,8 @@
       }
       input[type="text"],
       input[type="date"],
-      input[type="number"] {
+      input[type="number"],
+      select {
         display: block;
         width: 100%;
         min-height: 48px;
@@ -224,6 +233,14 @@
         background: var(--bg);
         border: 1px solid var(--line);
         border-radius: 8px;
+        appearance: none;
+      }
+      select {
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235b6068%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px top 50%;
+        background-size: 12px auto;
+        padding-right: 32px;
       }
       .row2 {
         display: grid;
@@ -235,6 +252,32 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 10px;
       }
+
+      .chk-group {
+        display: flex; flex-direction: column; gap: 8px;
+        background: var(--bg); padding: 12px; border-radius: 8px;
+        border: 1px solid var(--line); margin-top: 4px;
+      }
+      .chk-label {
+        display: flex; align-items: center; gap: 10px; margin: 0;
+        font-size: 15px; font-weight: 600; color: var(--ink);
+        cursor: pointer;
+      }
+      .chk-label input[type="checkbox"] {
+        width: 22px; height: 22px; margin: 0; cursor: pointer;
+        accent-color: var(--accent);
+      }
+      .result-box {
+        background: var(--ink); color: var(--bg); padding: 20px;
+        border-radius: 12px; text-align: center; margin-top: 16px;
+      }
+      .result-box .val { font-size: 36px; font-weight: 700; font-family: var(--display); }
+      .result-box .sub { font-size: 14px; opacity: 0.8; margin-top: 4px; color: var(--bg); }
+      .detail-row {
+        display: flex; justify-content: space-between;
+        padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; font-weight: 500;
+      }
+      .detail-row:last-child { border-bottom: none; }
 
       .brandseg {
         display: grid;
@@ -342,6 +385,21 @@
         min-height: 48px;
         font-size: 15px;
       }
+      .btn-order {
+        min-height: 36px;
+        min-width: 36px;
+        padding: 0 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: var(--soft);
+        color: var(--ink);
+        font: 700 14px var(--body);
+      }
+      .btn-order:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
       .msg {
         min-height: 1.4em;
         margin: 0 0 10px;
@@ -425,6 +483,10 @@
         background: var(--accent);
         border-color: var(--accent);
         color: var(--accent-ink);
+      }
+      .badge.retired {
+        background: var(--muted);
+        color: #fff;
       }
       .slots {
         display: grid;
@@ -585,6 +647,7 @@
         display: flex;
         gap: 8px;
         flex: 1 1 100%;
+        align-items: center;
       }
       .actions2 .primary {
         width: auto;
@@ -593,6 +656,7 @@
       .row-actions {
         display: flex;
         gap: 6px;
+        align-items: center;
       }
       tr.editing td {
         background: var(--soft);
@@ -612,6 +676,22 @@
         font-size: 14px;
       }
 
+      .opt-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .opt-row input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: var(--accent);
+      }
+
       #toast {
         position: fixed;
         left: 50%;
@@ -627,6 +707,7 @@
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.15s;
+        z-index: 9999;
       }
       #toast.show {
         opacity: 1;
@@ -656,7 +737,7 @@
       </header>
       <div class="kerb" aria-hidden="true"></div>
 
-      <div class="tabs" role="tablist" aria-label="Equipamento">
+      <div class="tabs" role="tablist" aria-label="Menu principal">
         <button
           role="tab"
           id="tab-pneus"
@@ -680,6 +761,14 @@
           aria-selected="false"
         >
           Estoque
+        </button>
+        <button
+          role="tab"
+          id="tab-peso"
+          aria-controls="panel-peso"
+          aria-selected="false"
+        >
+          Peso
         </button>
       </div>
 
@@ -769,7 +858,15 @@
         </div>
 
         <div class="card">
-          <div class="card-head"><h2>Desgaste por jogo</h2></div>
+          <div class="card-head">
+            <h2>Desgaste por jogo</h2>
+          </div>
+          <div class="opt-row">
+            <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer;">
+              <input type="checkbox" id="t-show-retired" />
+              Mostrar jogos aposentados
+            </label>
+          </div>
           <div class="scroll" id="t-sum"></div>
         </div>
 
@@ -794,9 +891,10 @@
         <div class="card">
           <div class="card-head">
             <h2>Registro de óleo</h2>
-            <button type="button" class="ghost" id="o-export">
-              Exportar CSV
-            </button>
+            <div class="head-actions">
+              <button type="button" class="ghost" id="m-manage">Editar lista</button>
+              <button type="button" class="ghost" id="o-export">Exportar CSV</button>
+            </div>
           </div>
           <label
             >Data do registro
@@ -817,6 +915,12 @@
               Total acumulado
             </button>
           </div>
+          <div class="opt-row">
+            <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer;">
+              <input type="checkbox" id="m-show-retired" />
+              Mostrar motores aposentados
+            </label>
+          </div>
           <p class="msg" id="o-msg" role="alert"></p>
         </div>
 
@@ -826,13 +930,13 @@
           <div class="card-head"><h2>Adicionar motor</h2></div>
           <div class="row2">
             <label
-              >Número do motor
+              >Nome ou Número
               <input
                 type="text"
                 id="m-new"
-                maxlength="10"
+                maxlength="30"
                 autocomplete="off"
-                placeholder="Ex.: 52"
+                placeholder="Ex.: HONDA GX390 ou 95"
               />
             </label>
             <div
@@ -892,7 +996,7 @@
                 id="s-name"
                 maxlength="40"
                 autocomplete="off"
-                placeholder="Ex.: Velas"
+                placeholder="Ex.: Óleo de corrente"
               />
             </label>
             <div class="row2">
@@ -934,9 +1038,14 @@
           <div class="card">
             <div class="card-head">
               <h2>Equipamentos</h2>
-              <button type="button" class="ghost" id="g-export">
-                Exportar CSV
-              </button>
+              <div class="head-actions">
+                <button type="button" class="ghost" id="g-manage">
+                  Editar lista
+                </button>
+                <button type="button" class="ghost" id="g-export">
+                  Exportar CSV
+                </button>
+              </div>
             </div>
             <div class="scroll" id="g-list"></div>
           </div>
@@ -990,6 +1099,79 @@
             </button>
           </div>
         </div>
+      </section>
+
+      <!-- PESO -->
+      <section id="panel-peso" role="tabpanel" aria-labelledby="tab-peso" hidden>
+        <div class="card">
+          <div class="card-head">
+            <h2>Simulação de Bateria</h2>
+          </div>
+          <label>Kart base
+            <select id="sim-kart"></select>
+          </label>
+          
+          <label>Conjuntos de Lastro Instalados
+            <div class="chk-group" id="sim-lastros-list">
+              <!-- Gerado via JS -->
+            </div>
+          </label>
+          
+          <div class="row2">
+            <label>Peso do Piloto (kg)
+              <input type="number" id="sim-piloto" step="0.1" value="70">
+            </label>
+            <label>Combustível de Saída (L)
+              <input type="number" id="sim-combustivel" step="0.5" value="3">
+            </label>
+          </div>
+          <label>Voltas Previstas na Sessão
+            <input type="number" id="sim-voltas" step="1" value="25">
+          </label>
+
+          <div class="result-box">
+            <div>Peso de Chegada Estimado</div>
+            <div class="val" id="res-final">0.0 kg</div>
+            <div class="sub" id="res-loss">Perda de 0.0 kg em combustível</div>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <div class="detail-row"><span>Kart Limpo:</span> <strong id="det-kart-base">0 kg</strong></div>
+            <div class="detail-row"><span>Total de Lastro:</span> <strong id="det-lastro">0 kg</strong></div>
+            <div class="detail-row"><span>Piloto Equipado:</span> <strong id="det-piloto">0 kg</strong></div>
+            <div class="detail-row"><span>Combustível Saída:</span> <strong id="det-comb-in">0 kg</strong></div>
+            <div class="detail-row" style="color: var(--accent);"><span>Peso Total de Saída:</span> <strong id="det-total-in">0 kg</strong></div>
+          </div>
+        </div>
+
+        <details class="card">
+          <summary>Editar Parâmetros Fixos</summary>
+          
+          <div class="lbl" style="margin-top: 4px;">Combustível</div>
+          <div class="row2">
+            <label>Consumo (L/volta)
+              <input type="number" id="cfg-consumo" step="0.001">
+            </label>
+            <label>Densidade (kg/L)
+              <input type="number" id="cfg-densidade" step="0.01">
+            </label>
+          </div>
+
+          <div class="lbl" style="margin-top: 12px;">Karts (Pesos Base em kg)</div>
+          <div class="row2">
+            <label>Praga <input type="number" id="cfg-k1"></label>
+            <label>Mega <input type="number" id="cfg-k2"></label>
+          </div>
+
+          <div class="lbl" style="margin-top: 12px;">Lastros (kg)</div>
+          <div class="row2">
+            <label>Conjunto 1 <input type="number" id="cfg-l1"></label>
+            <label>Conjunto 2 <input type="number" id="cfg-l2"></label>
+            <label>Conjunto 3 <input type="number" id="cfg-l3"></label>
+            <label>Conjunto 4 <input type="number" id="cfg-l4"></label>
+            <label>Conjunto 5 <input type="number" id="cfg-l5"></label>
+          </div>
+        </details>
       </section>
 
       <details class="card backup" id="backup">
@@ -1057,16 +1239,28 @@
           brand: BRANDS[0].name,
           track: "seca",
           hmode: "delta",
-          motors: ["95", "33", "71"],
+          motors: [
+            { name: "95", retired: false },
+            { name: "33", retired: false },
+            { name: "71", retired: false }
+          ],
+          showRetiredMotors: false,
+          showRetiredSets: false,
+          retiredSets: [],
           cycles: [],
           tires: [],
           sview: "cons",
           gear: [],
           stock: [],
           lastBackup: "",
+          weightCfg: { consumo: 0.099, densidade: 0.73, k1: 80.5, k2: 82.0, l1: 1.0, l2: 2.5, l3: 5.0, l4: 7.5, l5: 10.0 },
+          weightSim: { kartIdx: 1, piloto: 70, comb: 3, voltas: 25, lastrosIdx: [] }
         };
+        
         var selSet = 1;
         var storageOk = true;
+        var manageMotors = false;
+        var manageGear = false;
         var dl = null;
 
         function $(id) {
@@ -1100,6 +1294,25 @@
           return typeof v === "number" && isFinite(v);
         }
 
+        function mObj(m) {
+          if (m && typeof m === "object" && m.name) {
+            return { name: String(m.name), retired: !!m.retired };
+          }
+          return { name: String(m), retired: false };
+        }
+        function mName(m) {
+          return typeof m === "object" && m !== null ? m.name : String(m);
+        }
+
+        function moveItem(arr, index, dir) {
+          var target = index + dir;
+          if (target < 0 || target >= arr.length) return false;
+          var temp = arr[index];
+          arr[index] = arr[target];
+          arr[target] = temp;
+          return true;
+        }
+
         /* ---------- armazenamento e migração ---------- */
         function migrateCycle(c) {
           if (!c || typeof c !== "object" || !c.motor) return null;
@@ -1107,7 +1320,6 @@
             if (!c.changeDate) return null;
             return c;
           }
-          // formato antigo: dates[0] era a troca e já contava como 1° uso
           var dates = Array.isArray(c.dates) ? c.dates : [];
           if (!dates.length) return null;
           var uses = dates.map(function (dt, i) {
@@ -1128,6 +1340,7 @@
             obs: c.obs || "",
           };
         }
+        
         function sanitize(d) {
           var out = {};
           if (!d || typeof d !== "object") return out;
@@ -1139,7 +1352,14 @@
             });
           if (Array.isArray(d.cycles))
             out.cycles = d.cycles.map(migrateCycle).filter(Boolean);
-          if (Array.isArray(d.motors)) out.motors = d.motors.map(String);
+          if (Array.isArray(d.motors)) {
+            out.motors = d.motors.map(mObj);
+          }
+          if (typeof d.showRetiredMotors === "boolean") out.showRetiredMotors = d.showRetiredMotors;
+          if (typeof d.showRetiredSets === "boolean") out.showRetiredSets = d.showRetiredSets;
+          if (Array.isArray(d.retiredSets)) {
+            out.retiredSets = d.retiredSets.map(String);
+          }
           if (Array.isArray(d.stock)) {
             out.stock = d.stock
               .filter(function (i) {
@@ -1169,6 +1389,28 @@
                 };
               });
           }
+          if (d.weightCfg && typeof d.weightCfg === "object") {
+            out.weightCfg = {
+              consumo: isNum(d.weightCfg.consumo) ? d.weightCfg.consumo : 0.099,
+              densidade: isNum(d.weightCfg.densidade) ? d.weightCfg.densidade : 0.73,
+              k1: isNum(d.weightCfg.k1) ? d.weightCfg.k1 : 80.5,
+              k2: isNum(d.weightCfg.k2) ? d.weightCfg.k2 : 82.0,
+              l1: isNum(d.weightCfg.l1) ? d.weightCfg.l1 : 1.0,
+              l2: isNum(d.weightCfg.l2) ? d.weightCfg.l2 : 2.5,
+              l3: isNum(d.weightCfg.l3) ? d.weightCfg.l3 : 5.0,
+              l4: isNum(d.weightCfg.l4) ? d.weightCfg.l4 : 7.5,
+              l5: isNum(d.weightCfg.l5) ? d.weightCfg.l5 : 10.0
+            };
+          }
+          if (d.weightSim && typeof d.weightSim === "object") {
+            out.weightSim = {
+              kartIdx: isNum(d.weightSim.kartIdx) ? d.weightSim.kartIdx : (isNum(d.weightSim.kart) ? 1 : 1),
+              piloto: isNum(d.weightSim.piloto) ? d.weightSim.piloto : 70,
+              comb: isNum(d.weightSim.comb) ? d.weightSim.comb : 3,
+              voltas: isNum(d.weightSim.voltas) ? d.weightSim.voltas : 25,
+              lastrosIdx: Array.isArray(d.weightSim.lastrosIdx) ? d.weightSim.lastrosIdx.map(Number) : []
+            };
+          }
           return out;
         }
 
@@ -1184,11 +1426,17 @@
             if (sd.motors && sd.motors.length) state.motors = sd.motors;
             if (sd.stock) state.stock = sd.stock;
             if (sd.gear) state.gear = sd.gear;
+            if (typeof sd.showRetiredMotors === "boolean") state.showRetiredMotors = sd.showRetiredMotors;
+            if (typeof sd.showRetiredSets === "boolean") state.showRetiredSets = sd.showRetiredSets;
+            if (sd.retiredSets) state.retiredSets = sd.retiredSets;
+            if (sd.weightCfg) state.weightCfg = sd.weightCfg;
+            if (sd.weightSim) state.weightSim = sd.weightSim;
+
             if (d.track === "seca" || d.track === "molhada")
               state.track = d.track;
             if (d.hmode === "delta" || d.hmode === "total")
               state.hmode = d.hmode;
-            if (d.tab === "pneus" || d.tab === "oleo" || d.tab === "estoque")
+            if (d.tab === "pneus" || d.tab === "oleo" || d.tab === "estoque" || d.tab === "peso")
               state.tab = d.tab;
             if (d.sview === "cons" || d.sview === "equip")
               state.sview = d.sview;
@@ -1317,6 +1565,45 @@
           return t === "seca" ? "Seca" : t === "molhada" ? "Molhada" : "—";
         }
 
+        function renameTireSet(brand, setNum) {
+          var current = setLabel(brand, setNum);
+          var next = prompt("Novo nome para o " + setNum + "° jogo (" + brand + "):", current);
+          if (next === null) return;
+          next = next.trim();
+          if (!next) return;
+          var low = next.toLowerCase();
+          var sets = setsOf(brand);
+          var clash = sets.some(function (n) {
+            return n !== setNum && setLabel(brand, n).toLowerCase() === low;
+          });
+          if (clash) {
+            toast("Já existe um jogo com esse nome nesta marca.");
+            return;
+          }
+          state.tires.forEach(function (e) {
+            if (e.brand === brand && e.set === setNum) {
+              e.setName = next;
+            }
+          });
+          save();
+          renderTires();
+          toast("Nome do jogo atualizado.");
+        }
+
+        function toggleRetireSet(brand, setNum) {
+          var key = brand + '|' + setNum;
+          var idx = state.retiredSets.indexOf(key);
+          if (idx > -1) {
+            state.retiredSets.splice(idx, 1);
+            toast("Jogo reativado.");
+          } else {
+            state.retiredSets.push(key);
+            toast("Jogo aposentado.");
+          }
+          save();
+          renderTires();
+        }
+
         function renderTireForm() {
           var tb = $("t-track").querySelectorAll("button");
           for (var ti = 0; ti < tb.length; ti++)
@@ -1338,19 +1625,26 @@
 
           var sets = setsOf(state.brand);
           var next = (sets.length ? sets[sets.length - 1] : 0) + 1;
-          if (sets.indexOf(selSet) === -1 && selSet !== next) selSet = next;
+          
+          var visibleSets = sets.filter(function(n) {
+             return state.showRetiredSets || state.retiredSets.indexOf(state.brand + '|' + n) === -1;
+          });
+
+          if (visibleSets.indexOf(selSet) === -1 && selSet !== next) selSet = next;
+          
           var cw = $("t-sets");
           cw.innerHTML = "";
-          sets.forEach(function (n) {
+          visibleSets.forEach(function (n) {
             cw.appendChild(setChip(n, setLabel(state.brand, n)));
           });
           cw.appendChild(setChip(next, "+ Novo jogo (" + next + "°)"));
 
-          var isNew = sets.indexOf(selSet) === -1;
+          var isNew = visibleSets.indexOf(selSet) === -1;
           $("t-setname-wrap").hidden = !isNew;
           if (!isNew) $("t-setname").value = "";
           $("t-setname").placeholder = "Padrão: " + selSet + "° Jogo";
         }
+
         function setChip(n, label) {
           var b = document.createElement("button");
           b.type = "button";
@@ -1362,6 +1656,9 @@
         }
 
         function renderTires() {
+          var showRet = !!$("t-show-retired").checked;
+          state.showRetiredSets = showRet;
+          
           renderTireForm();
 
           var html = "";
@@ -1382,16 +1679,17 @@
               m.uses += 1;
               m.last = e.date;
             });
-            var rows = Object.keys(map)
-              .map(Number)
-              .sort(function (a, c) {
-                return a - c;
-              })
-              .map(function (k) {
+
+            var rowsHtml = "";
+            Object.keys(map).map(Number).sort(function(a,c){return a-c;}).forEach(function(k) {
                 var m = map[k];
-                return (
-                  "<tr><td>" +
-                  esc(setLabel(b.name, m.set)) +
+                var isRet = state.retiredSets.indexOf(b.name + '|' + m.set) !== -1;
+                if (isRet && !showRet) return;
+                
+                var badge = isRet ? ' <span class="badge retired" style="font-size:11px; padding:2px 6px; margin-left:6px; font-weight:normal;">Aposentado</span>' : '';
+                
+                rowsHtml += "<tr><td>" +
+                  esc(setLabel(b.name, m.set)) + badge +
                   '</td><td class="num">' +
                   fmtNum(m.laps) +
                   '</td><td class="num">' +
@@ -1400,22 +1698,26 @@
                   m.uses +
                   '</td><td class="num">' +
                   fmtDate(m.last) +
-                  "</td></tr>"
-                );
-              })
-              .join("");
-            html +=
-              '<div class="brand-h">' +
-              dot(b.name) +
-              esc(b.name) +
-              "</div><table><thead><tr><th>Jogo</th>" +
-              '<th class="num">Voltas</th><th class="num">Molhada</th><th class="num">Usos</th><th class="num">Último uso</th></tr></thead><tbody>' +
-              rows +
-              "</tbody></table>";
+                  '</td><td><div class="row-actions">' + 
+                  '<button type="button" class="ghost" data-ren-b="' + esc(b.name) + '" data-ren-s="' + m.set + '">Renomear</button>' +
+                  '<button type="button" class="ghost" data-ret-b="' + esc(b.name) + '" data-ret-s="' + m.set + '">' + (isRet ? 'Reativar' : 'Aposentar') + '</button>' +
+                  '</div></td></tr>';
+            });
+            
+            if (rowsHtml) {
+              html +=
+                '<div class="brand-h">' +
+                dot(b.name) +
+                esc(b.name) +
+                "</div><table><thead><tr><th>Jogo</th>" +
+                '<th class="num">Voltas</th><th class="num">Molhada</th><th class="num">Usos</th><th class="num">Último uso</th><th></th></tr></thead><tbody>' +
+                rowsHtml +
+                "</tbody></table>";
+            }
           });
           $("t-sum").innerHTML =
             html ||
-            '<p class="empty">Nenhum jogo registrado ainda. Preencha o formulário acima.</p>';
+            '<p class="empty">Nenhum jogo nesta visualização. Preencha o formulário ou exiba os aposentados.</p>';
 
           var hist = $("t-hist");
           if (!state.tires.length) {
@@ -1521,7 +1823,6 @@
           })[0];
           if (!e) return;
           if (e.setName) {
-            // preserva o nome personalizado do jogo se ainda houver outros registros dele
             var rest = state.tires.filter(function (x) {
               return x.id !== id && x.brand === e.brand && x.set === e.set;
             });
@@ -1541,9 +1842,9 @@
         }
 
         /* ---------- motores: óleo, horas e km ---------- */
-        function motorCycles(m) {
+        function motorCycles(mName) {
           return state.cycles.filter(function (c) {
-            return c.motor === m;
+            return c.motor === mName;
           });
         }
         function lastEventDate(cs) {
@@ -1551,10 +1852,10 @@
           var c = cs[cs.length - 1];
           return c.uses.length ? c.uses[c.uses.length - 1].date : c.changeDate;
         }
-        function motorTotals(m) {
+        function motorTotals(mName) {
           var min = 0,
             km = 0;
-          motorCycles(m).forEach(function (c) {
+          motorCycles(mName).forEach(function (c) {
             c.uses.forEach(function (u) {
               if (isNum(u.min)) min += u.min;
               if (isNum(u.km)) km += u.km;
@@ -1595,8 +1896,8 @@
             "</div>"
           );
         }
-        function totalLine(m) {
-          var t = motorTotals(m);
+        function totalLine(mName) {
+          var t = motorTotals(mName);
           return t.min > 0 || t.km > 0
             ? '<p class="motor-total">Total do motor: ' +
                 fmtHM(t.min) +
@@ -1605,8 +1906,8 @@
                 " km</p>"
             : "";
         }
-        function hkFields(m) {
-          var a = ' data-motor="' + esc(m) + '" autocomplete="off"';
+        function hkFields(mName) {
+          var a = ' data-motor="' + esc(mName) + '" autocomplete="off"';
           return (
             '<p class="hk-cap">Horas e km (opcional) · ' +
             (state.hmode === "total" ? "total acumulado" : "desta sessão") +
@@ -1623,14 +1924,57 @@
             ' placeholder="0"></label></div>'
           );
         }
-        function motorInput(cls, m) {
+        function motorInput(cls, mName) {
           var els = $("o-list").querySelectorAll("." + cls);
           for (var i = 0; i < els.length; i++)
-            if (els[i].dataset.motor === m) return els[i];
+            if (els[i].dataset.motor === mName) return els[i];
           return null;
         }
 
+        function renameMotor(oldName) {
+          var newName = prompt("Novo nome do motor:", oldName);
+          if (newName === null) return;
+          newName = newName.trim();
+          if (!newName || newName === oldName) return;
+          var clash = state.motors.some(function (m) {
+            return mName(m).toUpperCase() === newName.toUpperCase();
+          });
+          if (clash) {
+            toast("O motor " + newName + " já existe.");
+            return;
+          }
+          state.motors.forEach(function (m) {
+            if (mName(m) === oldName) {
+              if (typeof m === "object") m.name = newName;
+              else m = newName;
+            }
+          });
+          state.cycles.forEach(function (c) {
+            if (c.motor === oldName) c.motor = newName;
+          });
+          save();
+          renderOil();
+          toast("Motor renomeado para " + newName + ".");
+        }
+
+        function toggleRetireMotor(mNameStr) {
+          var found = false;
+          state.motors.forEach(function (m) {
+            if (mName(m) === mNameStr) {
+              m.retired = !m.retired;
+              found = true;
+              toast(m.retired ? "Motor " + mNameStr + " aposentado." : "Motor " + mNameStr + " reativado.");
+            }
+          });
+          if (found) {
+            save();
+            renderOil();
+          }
+        }
+
         function renderOil() {
+          $("m-manage").textContent = manageMotors ? "Concluir" : "Editar lista";
+          
           var host = $("o-list");
           var out = "";
           var keep = {};
@@ -1638,7 +1982,16 @@
             keep[el.className + "|" + el.dataset.motor] = el.value;
           });
 
-          state.motors.forEach(function (m) {
+          var showRetired = !!$("m-show-retired").checked;
+          state.showRetiredMotors = showRetired;
+
+          var visibleMotors = state.motors.filter(function (m) {
+            return showRetired || !m.retired;
+          });
+
+          visibleMotors.forEach(function (mItem, idx) {
+            var m = mName(mItem);
+            var isRetired = !!mItem.retired;
             var cs = motorCycles(m);
             var cur = cs.length ? cs[cs.length - 1] : null;
             var n = cur ? cur.uses.length : 0;
@@ -1647,7 +2000,11 @@
               primary,
               secondary = null;
             var chg = { act: "change", label: "Registrar troca" };
-            if (!cur) {
+
+            if (isRetired) {
+              status = "Aposentado";
+              primary = chg;
+            } else if (!cur) {
               status = "Sem troca registrada";
               primary = chg;
             } else if (n === 0) {
@@ -1717,11 +2074,15 @@
                 esc(m) +
                 '">Desfazer último</button>';
             if (row2) actions += '<div class="actions2">' + row2 + "</div>";
-            var rm = !cs.length
-              ? '<div class="actions2"><button type="button" class="del" data-kind="motor" data-id="' +
-                esc(m) +
-                '">Remover motor</button></div>'
-              : "";
+            
+            if (manageMotors) {
+              var toolsRow = '<div class="actions2" style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line);">' +
+                '<button type="button" class="ghost grow" data-mact="rename" data-id="' + esc(m) + '">Renomear</button>' +
+                '<button type="button" class="ghost grow" data-mact="retire" data-id="' + esc(m) + '">' + (isRetired ? 'Reativar' : 'Aposentar') + '</button>' +
+                '<button type="button" class="del" data-kind="motor" data-id="' + esc(m) + '">Remover</button>' +
+                '</div>';
+              actions += toolsRow;
+            }
 
             var obs = cur
               ? '<label>Observação deste ciclo<input type="text" class="o-obs" maxlength="120" autocomplete="off" data-motor="' +
@@ -1770,11 +2131,21 @@
                 "</tbody></table></div></details>";
             }
 
+            var orderBtns = '';
+            if (manageMotors) {
+              var realIdx = state.motors.indexOf(mItem);
+              orderBtns =
+                '<div style="display:flex; gap:4px;">' +
+                '<button type="button" class="btn-order" data-mact="up" data-idx="' + realIdx + '"' + (realIdx === 0 ? ' disabled' : '') + '>▲</button>' +
+                '<button type="button" class="btn-order" data-mact="down" data-idx="' + realIdx + '"' + (realIdx === state.motors.length - 1 ? ' disabled' : '') + '>▼</button>' +
+                '</div>';
+            }
+
             out +=
-              '<article class="card"><div class="card-head"><h2>Motor #' +
+              '<article class="card"><div class="card-head"><div class="card-title-group"><h2>' +
               esc(m) +
-              '</h2><span class="badge' +
-              (warn ? " warn" : "") +
+              '</h2>' + orderBtns + '</div><span class="badge' +
+              (isRetired ? " retired" : warn ? " warn" : "") +
               '">' +
               status +
               '</span></div><div class="slots">' +
@@ -1784,13 +2155,13 @@
               obs +
               (cur ? hkFields(m) : "") +
               actions +
-              rm +
               prevHtml +
               "</article>";
           });
+
           host.innerHTML =
             out ||
-            '<div class="card"><p class="empty">Nenhum motor cadastrado. Adicione um abaixo.</p></div>';
+            '<div class="card"><p class="empty">Nenhum motor nesta visualização. Adicione um abaixo ou exiba os aposentados.</p></div>';
 
           host.querySelectorAll(".o-h, .o-m, .o-k").forEach(function (el) {
             var v = keep[el.className + "|" + el.dataset.motor];
@@ -1798,25 +2169,25 @@
           });
         }
 
-        function registerOil(m, act) {
+        function registerOil(mName, act) {
           var msg = $("o-msg");
           msg.textContent = "";
           var date = $("o-date").value || todayIso();
-          var cs = motorCycles(m);
+          var cs = motorCycles(mName);
           var last = lastEventDate(cs);
           if (last && date < last) {
             msg.textContent =
-              "A data não pode ser anterior ao último registro do motor #" +
-              m +
+              "A data não pode ser anterior ao último registro de " +
+              mName +
               " (" +
               fmtDate(last) +
               ").";
             return;
           }
           var cur = cs.length ? cs[cs.length - 1] : null;
-          var hEl = motorInput("o-h", m),
-            mEl = motorInput("o-m", m),
-            kEl = motorInput("o-k", m);
+          var hEl = motorInput("o-h", mName),
+            mEl = motorInput("o-m", mName),
+            kEl = motorInput("o-k", mName);
           var hRaw = hEl ? hEl.value.trim() : "",
             mRaw = mEl ? mEl.value.trim() : "",
             kRaw = kEl ? kEl.value.trim() : "";
@@ -1829,15 +2200,15 @@
             }
             state.cycles.push({
               id: uid(),
-              motor: m,
+              motor: mName,
               changeDate: date,
               uses: [],
               obs: "",
             });
-            toast("Troca de óleo do motor #" + m + " registrada.");
+            toast("Troca de óleo de " + mName + " registrada.");
           } else {
             if (!cur) return;
-            var tot = motorTotals(m),
+            var tot = motorTotals(mName),
               minVal = null,
               kmVal = null;
             if (hRaw !== "" || mRaw !== "") {
@@ -1890,8 +2261,8 @@
             cur.uses.push({ date: date, min: minVal, km: kmVal });
             toast(
               cur.uses.length +
-                "° uso do motor #" +
-                m +
+                "° uso de " +
+                mName +
                 " registrado" +
                 (cur.uses.length > CYCLE_LEN ? " (acima do limite)." : "."),
             );
@@ -1903,8 +2274,8 @@
           renderOil();
         }
 
-        function undoOil(m) {
-          var cs = motorCycles(m);
+        function undoOil(mName) {
+          var cs = motorCycles(mName);
           if (!cs.length) return;
           var cur = cs[cs.length - 1];
           if (cur.uses.length) cur.uses.pop();
@@ -1918,21 +2289,24 @@
 
         function addMotor() {
           $("o-msg").textContent = "";
-          var label = $("m-new").value.trim().replace(/^#/, "").toUpperCase();
+          var label = $("m-new").value.trim();
           if (!label) {
-            toast("Informe o número do motor.");
+            toast("Informe o nome do motor.");
             $("m-new").focus();
             return;
           }
-          if (state.motors.indexOf(label) !== -1) {
-            toast("O motor #" + label + " já existe.");
+          var exists = state.motors.some(function (m) {
+            return mName(m).toUpperCase() === label.toUpperCase();
+          });
+          if (exists) {
+            toast("O motor " + label + " já existe.");
             return;
           }
-          state.motors.push(label);
+          state.motors.push({ name: label, retired: false });
           $("m-new").value = "";
           save();
           renderOil();
-          toast("Motor #" + label + " adicionado.");
+          toast("Motor " + label + " adicionado.");
         }
 
         /* ---------- estoque ---------- */
@@ -1994,7 +2368,7 @@
               ? { n: en.value, u: eu.value }
               : null;
           var html = state.stock
-            .map(function (it) {
+            .map(function (it, idx) {
               var id = esc(it.id),
                 nm = esc(it.name);
               if (editItemId === it.id) {
@@ -2041,6 +2415,12 @@
               var meta =
                 esc(it.unit) +
                 (it.updated ? " · atualizado " + fmtDM(it.updated) : "");
+
+              var orderBtns = manageStock
+                ? '<button type="button" class="btn-order" data-sact="up" data-idx="' + idx + '"' + (idx === 0 ? ' disabled' : '') + '>▲</button>' +
+                  '<button type="button" class="btn-order" data-sact="down" data-idx="' + idx + '"' + (idx === state.stock.length - 1 ? ' disabled' : '') + '>▼</button>'
+                : '';
+
               return (
                 '<li class="srow"><div class="sinfo"><span class="sname">' +
                 nm +
@@ -2059,7 +2439,9 @@
                 nm +
                 '">+1</button></div>' +
                 (manageStock
-                  ? '<div class="srow-tools"><button type="button" class="ghost grow" data-sact="editrow" data-id="' +
+                  ? '<div class="srow-tools">' +
+                    orderBtns +
+                    '<button type="button" class="ghost grow" data-sact="editrow" data-id="' +
                     id +
                     '" aria-label="Editar ' +
                     nm +
@@ -2225,19 +2607,25 @@
         }
 
         function renderGear() {
-          var gs = state.gear.slice().sort(function (a, b) {
-            return (
-              a.name.localeCompare(b.name, "pt-BR") ||
-              a.ident.localeCompare(b.ident, "pt-BR")
-            );
-          });
+          $("g-manage").textContent = manageGear ? "Concluir" : "Editar lista";
+          var gs = state.gear;
           if (!gs.length) {
             $("g-list").innerHTML =
               '<p class="empty">Nenhum equipamento cadastrado. Adicione um abaixo.</p>';
             return;
           }
           var rows = gs
-            .map(function (g) {
+            .map(function (g, idx) {
+              var orderBtns = manageGear 
+                ? '<button type="button" class="btn-order" data-gact="up" data-idx="' + idx + '"' + (idx === 0 ? ' disabled' : '') + '>▲</button>' +
+                  '<button type="button" class="btn-order" data-gact="down" data-idx="' + idx + '"' + (idx === gs.length - 1 ? ' disabled' : '') + '>▼</button>'
+                : '';
+                
+              var toolsRow = manageGear 
+                ? '<button type="button" class="ghost" data-gedit="' + esc(g.id) + '" aria-label="Editar equipamento">Editar</button>' +
+                  '<button type="button" class="del" data-kind="gear" data-id="' + esc(g.id) + '" aria-label="Apagar equipamento">Apagar</button>'
+                : '';
+
               return (
                 "<tr" +
                 (g.id === editGearId ? ' class="editing"' : "") +
@@ -2248,12 +2636,7 @@
                 '</td><td class="wrapok">' +
                 esc(g.obs) +
                 '</td><td><div class="row-actions">' +
-                '<button type="button" class="ghost" data-gedit="' +
-                esc(g.id) +
-                '" aria-label="Editar equipamento">Editar</button>' +
-                '<button type="button" class="del" data-kind="gear" data-id="' +
-                esc(g.id) +
-                '" aria-label="Apagar equipamento">Apagar</button></div></td></tr>'
+                orderBtns + toolsRow + '</div></td></tr>'
               );
             })
             .join("");
@@ -2341,6 +2724,106 @@
           toast(name + (ident ? " " + ident : "") + " adicionado.");
         }
 
+        /* ---------- peso e balanceamento ---------- */
+        function loadWeightCfg() {
+          $("cfg-consumo").value = state.weightCfg.consumo;
+          $("cfg-densidade").value = state.weightCfg.densidade;
+          $("cfg-k1").value = state.weightCfg.k1;
+          $("cfg-k2").value = state.weightCfg.k2;
+          for(var i=1; i<=5; i++) {
+            $("cfg-l"+i).value = state.weightCfg["l"+i];
+          }
+        }
+        function loadWeightSim() {
+          $("sim-piloto").value = state.weightSim.piloto;
+          $("sim-combustivel").value = state.weightSim.comb;
+          $("sim-voltas").value = state.weightSim.voltas;
+        }
+        function saveWeightCfg() {
+          state.weightCfg = {
+            consumo: parseNonNeg($("cfg-consumo").value) || 0,
+            densidade: parseNonNeg($("cfg-densidade").value) || 0,
+            k1: parseNonNeg($("cfg-k1").value) || 0,
+            k2: parseNonNeg($("cfg-k2").value) || 0,
+            l1: parseNonNeg($("cfg-l1").value) || 0,
+            l2: parseNonNeg($("cfg-l2").value) || 0,
+            l3: parseNonNeg($("cfg-l3").value) || 0,
+            l4: parseNonNeg($("cfg-l4").value) || 0,
+            l5: parseNonNeg($("cfg-l5").value) || 0
+          };
+          save();
+          renderPesoSelects();
+          calcPeso();
+        }
+        function renderPesoSelects() {
+          var kSelect = $("sim-kart");
+          kSelect.innerHTML = 
+            '<option value="1">Praga (' + state.weightCfg.k1 + ' kg)</option>' +
+            '<option value="2">Mega (' + state.weightCfg.k2 + ' kg)</option>';
+          
+          kSelect.value = state.weightSim.kartIdx || 1;
+
+          var lContainer = $("sim-lastros-list");
+          lContainer.innerHTML = '';
+          for(var i=1; i<=5; i++) {
+            var val = state.weightCfg["l"+i];
+            var isChecked = state.weightSim.lastrosIdx.indexOf(i) !== -1 ? "checked" : "";
+            lContainer.innerHTML += 
+              '<label class="chk-label">' +
+                '<input type="checkbox" id="cb-l'+i+'" class="sim-cb" value="' + val + '" ' + isChecked + '> ' +
+                'Conjunto ' + i + ' (' + val + ' kg)' +
+              '</label>';
+          }
+          
+          var cbs = lContainer.querySelectorAll(".sim-cb");
+          for(var j=0; j<cbs.length; j++) {
+              cbs[j].addEventListener("change", saveWeightSimAndCalc);
+          }
+        }
+        function saveWeightSimAndCalc() {
+            var lastrosIdx = [];
+            for(var i=1; i<=5; i++) {
+                var cb = $("cb-l" + i);
+                if(cb && cb.checked) lastrosIdx.push(i);
+            }
+            state.weightSim = {
+                kartIdx: parseInt($("sim-kart").value) || 1,
+                piloto: parseFloat($("sim-piloto").value) || 0,
+                comb: parseFloat($("sim-combustivel").value) || 0,
+                voltas: parseFloat($("sim-voltas").value) || 0,
+                lastrosIdx: lastrosIdx
+            };
+            save();
+            calcPeso();
+        }
+        function calcPeso() {
+            var cfg = state.weightCfg;
+            var sim = state.weightSim;
+            
+            var pesoLastro = 0;
+            sim.lastrosIdx.forEach(function(i) {
+                pesoLastro += cfg["l"+i];
+            });
+            
+            var pesoKart = sim.kartIdx === 2 ? cfg.k2 : cfg.k1;
+            var pesoCombustivelSaida = sim.comb * cfg.densidade;
+            var totalSaida = pesoKart + pesoLastro + sim.piloto + pesoCombustivelSaida;
+            
+            var litrosGastos = cfg.consumo * sim.voltas;
+            var pesoPerdido = litrosGastos * cfg.densidade;
+            
+            var totalChegada = totalSaida - pesoPerdido;
+
+            $("res-final").textContent = totalChegada.toFixed(1) + " kg";
+            $("res-loss").textContent = "Gasto de " + litrosGastos.toFixed(2) + "L (" + pesoPerdido.toFixed(2) + " kg) na pista";
+            
+            $("det-kart-base").textContent = pesoKart.toFixed(1) + " kg";
+            $("det-lastro").textContent = pesoLastro.toFixed(1) + " kg";
+            $("det-piloto").textContent = sim.piloto.toFixed(1) + " kg";
+            $("det-comb-in").textContent = pesoCombustivelSaida.toFixed(2) + " kg";
+            $("det-total-in").textContent = totalSaida.toFixed(1) + " kg";
+        }
+
         function setSview(v) {
           state.sview = v;
           var b = $("s-view").querySelectorAll("button");
@@ -2387,10 +2870,11 @@
             renderGear();
           } else if (kind === "motor") {
             state.motors = state.motors.filter(function (x) {
-              return x !== id;
+              return mName(x) !== id;
             });
             save();
             renderOil();
+            toast("Motor " + id + " removido.");
           }
         });
 
@@ -2427,16 +2911,19 @@
             });
           } else if (kind === "oil") {
             lines = [
-              "Motor;Ciclo;Evento;Data;Horas (decimal);km;Horas acumuladas;km acumulados;Obs do ciclo",
+              "Motor;Status;Ciclo;Evento;Data;Horas (decimal);km;Horas acumuladas;km acumulados;Obs do ciclo",
             ];
-            state.motors.forEach(function (m) {
+            state.motors.forEach(function (mItem) {
+              var m = mName(mItem);
+              var st = mItem.retired ? "Aposentado" : "Ativo";
               var cs = motorCycles(m),
                 am = 0,
                 ak = 0;
               cs.forEach(function (c, ci) {
                 lines.push(
                   [
-                    csvText("#" + m),
+                    csvText(m),
+                    st,
                     ci + 1,
                     "Troca",
                     fmtDate(c.changeDate),
@@ -2452,7 +2939,8 @@
                   if (isNum(u.km)) ak += u.km;
                   lines.push(
                     [
-                      csvText("#" + m),
+                      csvText(m),
+                      st,
                       ci + 1,
                       i + 1 + "° uso",
                       fmtDate(u.date),
@@ -2468,7 +2956,8 @@
               if (cs.length)
                 lines.push(
                   [
-                    csvText("#" + m),
+                    csvText(m),
+                    st,
                     "TOTAL",
                     "",
                     "",
@@ -2571,6 +3060,11 @@
             tires: state.tires,
             stock: state.stock,
             gear: state.gear,
+            showRetiredMotors: state.showRetiredMotors,
+            showRetiredSets: state.showRetiredSets,
+            retiredSets: state.retiredSets,
+            weightCfg: state.weightCfg,
+            weightSim: state.weightSim
           };
         }
         function importSummary(s) {
@@ -2713,6 +3207,9 @@
             state.stock = s.stock || [];
             state.gear = s.gear || [];
             if (s.motors && s.motors.length) state.motors = s.motors;
+            if (s.retiredSets) state.retiredSets = s.retiredSets;
+            if (s.weightCfg) state.weightCfg = s.weightCfg;
+            if (s.weightSim) state.weightSim = s.weightSim;
             report = "Dados substituídos pelo conteúdo do backup.";
           } else {
             var n = {
@@ -2721,9 +3218,18 @@
               stock: mergeById(state.stock, s.stock || []),
               gear: mergeById(state.gear, s.gear || []),
             };
-            (s.motors || []).forEach(function (m) {
-              if (state.motors.indexOf(m) === -1) state.motors.push(m);
+            (s.motors || []).forEach(function (mIn) {
+              var label = mName(mIn);
+              var exists = state.motors.some(function (m) {
+                return mName(m) === label;
+              });
+              if (!exists) state.motors.push(mObj(mIn));
             });
+            (s.retiredSets || []).forEach(function (rSet) {
+               if (state.retiredSets.indexOf(rSet) === -1) state.retiredSets.push(rSet);
+            });
+            if (s.weightCfg) state.weightCfg = s.weightCfg;
+            if (s.weightSim) state.weightSim = s.weightSim;
             report =
               "Mesclado: " +
               n.tires +
@@ -2736,8 +3242,10 @@
               " equipamentos novos.";
           }
           state.cycles.forEach(function (c) {
-            if (state.motors.indexOf(c.motor) === -1)
-              state.motors.push(c.motor);
+            var exists = state.motors.some(function (m) {
+              return mName(m) === c.motor;
+            });
+            if (!exists) state.motors.push({ name: c.motor, retired: false });
           });
           state.cycles = state.cycles
             .map(function (c, i) {
@@ -2754,6 +3262,8 @@
           editItemId = null;
           editingId = null;
           manageStock = false;
+          manageMotors = false;
+          manageGear = false;
           resetGearForm();
           pendingImport = null;
           armedReplace = false;
@@ -2763,6 +3273,8 @@
           renderOil();
           renderStock();
           renderGear();
+          renderPesoSelects();
+          calcPeso();
           renderBackupInfo();
           $("b-msg").textContent = "";
           toast(report);
@@ -2771,7 +3283,7 @@
         /* ---------- abas e modo de horas ---------- */
         function setTab(tab) {
           state.tab = tab;
-          ["pneus", "oleo", "estoque"].forEach(function (t) {
+          ["pneus", "oleo", "estoque", "peso"].forEach(function (t) {
             $("tab-" + t).setAttribute("aria-selected", String(t === tab));
             $("panel-" + t).hidden = t !== tab;
           });
@@ -2790,6 +3302,8 @@
         selSet = lastSetOf(state.brand);
         $("t-date").value = todayIso();
         $("o-date").value = todayIso();
+        $("m-show-retired").checked = !!state.showRetiredMotors;
+        $("t-show-retired").checked = !!state.showRetiredSets;
         setHmode(state.hmode);
         setTab(state.tab);
         renderTires();
@@ -2797,6 +3311,13 @@
         setSview(state.sview);
         renderStock();
         renderGear();
+        
+        // Peso Init
+        loadWeightCfg();
+        loadWeightSim();
+        renderPesoSelects();
+        calcPeso();
+        
         renderBackupInfo();
 
         $("tab-pneus").addEventListener("click", function () {
@@ -2808,15 +3329,38 @@
         $("tab-estoque").addEventListener("click", function () {
           setTab("estoque");
         });
+        $("tab-peso").addEventListener("click", function () {
+          setTab("peso");
+        });
+
+        var cfgInputs = ["cfg-consumo", "cfg-densidade", "cfg-k1", "cfg-k2", "cfg-l1", "cfg-l2", "cfg-l3", "cfg-l4", "cfg-l5"];
+        cfgInputs.forEach(function(id) {
+            $(id).addEventListener("input", saveWeightCfg);
+        });
+
+        var simInputs = ["sim-kart", "sim-piloto", "sim-combustivel", "sim-voltas"];
+        simInputs.forEach(function(id) {
+            $(id).addEventListener("input", saveWeightSimAndCalc);
+        });
+
         $("s-view").addEventListener("click", function (e) {
           var b = e.target.closest("button");
           if (b) setSview(b.dataset.view);
+        });
+        $("m-manage").addEventListener("click", function () {
+          manageMotors = !manageMotors;
+          renderOil();
         });
         $("s-manage").addEventListener("click", function () {
           manageStock = !manageStock;
           editingId = null;
           editItemId = null;
           renderStock();
+        });
+        $("g-manage").addEventListener("click", function () {
+          manageGear = !manageGear;
+          editGearId = null;
+          renderGear();
         });
         $("s-list").addEventListener("click", function (e) {
           var b = e.target.closest("[data-sact]");
@@ -2825,6 +3369,13 @@
             id = b.dataset.id;
           if (a === "inc") bumpStock(id, 1);
           else if (a === "dec") bumpStock(id, -1);
+          else if (a === "up" || a === "down") {
+            var idx = Number(b.dataset.idx);
+            if (moveItem(state.stock, idx, a === "up" ? -1 : 1)) {
+              save();
+              renderStock();
+            }
+          }
           else if (a === "edit") {
             editingId = id;
             renderStock();
@@ -2882,8 +3433,20 @@
           renderGear();
         });
         $("g-list").addEventListener("click", function (e) {
-          var b = e.target.closest("[data-gedit]");
-          if (b) startGearEdit(b.dataset.gedit);
+          var bEdit = e.target.closest("[data-gedit]");
+          if (bEdit) {
+            startGearEdit(bEdit.dataset.gedit);
+            return;
+          }
+          var bOrder = e.target.closest("[data-gact]");
+          if (bOrder) {
+            var act = bOrder.dataset.gact;
+            var idx = Number(bOrder.dataset.idx);
+            if (moveItem(state.gear, idx, act === "up" ? -1 : 1)) {
+              save();
+              renderGear();
+            }
+          }
         });
         ["g-name", "g-ident", "g-obs"].forEach(function (id) {
           $(id).addEventListener("keydown", function (e) {
@@ -2912,6 +3475,18 @@
           $("t-setname").value = "";
           renderTireForm();
         });
+        $("t-sum").addEventListener("click", function (e) {
+          var renBtn = e.target.closest("[data-ren-b]");
+          if (renBtn) {
+            renameTireSet(renBtn.dataset.renB, Number(renBtn.dataset.renS));
+            return;
+          }
+          var retBtn = e.target.closest("[data-ret-b]");
+          if (retBtn) {
+            toggleRetireSet(retBtn.dataset.retB, Number(retBtn.dataset.retS));
+            return;
+          }
+        });
         $("t-track").addEventListener("click", function (e) {
           var b = e.target.closest("button");
           if (!b) return;
@@ -2925,6 +3500,14 @@
           setHmode(b.dataset.mode);
           renderOil();
         });
+        $("m-show-retired").addEventListener("change", function () {
+          save();
+          renderOil();
+        });
+        $("t-show-retired").addEventListener("change", function () {
+          save();
+          renderTires();
+        });
         $("t-add").addEventListener("click", addTire);
         ["t-laps", "t-press", "t-obs", "t-setname"].forEach(function (id) {
           $(id).addEventListener("keydown", function (e) {
@@ -2932,8 +3515,24 @@
           });
         });
         $("o-list").addEventListener("click", function (e) {
-          var b = e.target.closest(".o-act");
-          if (b) registerOil(b.dataset.motor, b.dataset.act);
+          var bAct = e.target.closest(".o-act");
+          if (bAct) {
+            registerOil(bAct.dataset.motor, bAct.dataset.act);
+            return;
+          }
+          var bMact = e.target.closest("[data-mact]");
+          if (bMact) {
+            var act = bMact.dataset.mact;
+            if (act === "rename") renameMotor(bMact.dataset.id);
+            else if (act === "retire") toggleRetireMotor(bMact.dataset.id);
+            else if (act === "up" || act === "down") {
+              var idx = Number(bMact.dataset.idx);
+              if (moveItem(state.motors, idx, act === "up" ? -1 : 1)) {
+                save();
+                renderOil();
+              }
+            }
+          }
         });
         $("o-list").addEventListener("change", function (e) {
           var t = e.target;
@@ -2959,10 +3558,11 @@
         });
         $("bmode-seg").addEventListener("click", function (e) {
           var b = e.target.closest("button");
-          if (!b) return;
-          bmode = b.dataset.bmode;
-          armedReplace = false;
-          renderBackupInfo();
+          if (b) {
+            bmode = b.dataset.bmode;
+            armedReplace = false;
+            renderBackupInfo();
+          }
         });
         $("b-apply").addEventListener("click", applyImport);
         $("b-cancel").addEventListener("click", function () {
@@ -2978,14 +3578,12 @@
           exportCsv("oil");
         });
 
-        // pede ao navegador para não descartar os dados salvos quando o espaço estiver baixo
         try {
           if (navigator.storage && navigator.storage.persist)
             Promise.resolve(navigator.storage.persist()).catch(function () {});
         } catch (e) {
           /* ignora */
         }
-        // offline: registra o service worker (só no site publicado, nunca dentro do Claude)
         if (
           !window.claude &&
           "serviceWorker" in navigator &&
