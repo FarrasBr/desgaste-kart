@@ -1,7 +1,7 @@
 /* Service worker do Desgaste do kart.
    Guarda o app no aparelho para ele abrir sem internet.
    >>> Ao publicar uma nova versão dos arquivos, aumente VERSION (v1 -> v2 -> v3...). <<< */
-var VERSION = 'v1';
+var VERSION = 'v2';
 var CACHE = 'desgaste-kart-' + VERSION;
 var ASSETS = [
   './',
