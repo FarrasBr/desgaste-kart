@@ -1,12 +1,17 @@
 /* Service worker do Desgaste do kart.
    Guarda o app no aparelho para ele abrir sem internet.
    >>> Ao publicar uma nova versão dos arquivos, aumente VERSION (v1 -> v2 -> v3...). <<< */
-var VERSION = 'v2';
+var VERSION = 'v3';
 var CACHE = 'desgaste-kart-' + VERSION;
 var ASSETS = [
   './',
   'index.html',
   'manifest.webmanifest',
+  'firebase-config.js',
+  'sync.js',
+  'vendor/firebase/firebase-app-compat.js',
+  'vendor/firebase/firebase-auth-compat.js',
+  'vendor/firebase/firebase-firestore-compat.js',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/maskable-512.png',

@@ -1,0 +1,69 @@
+rules_version = '2';
+
+// Regras de segurança do Firestore para o Desgaste do kart.
+// Cole este conteúdo em: Console do Firebase → Firestore Database → Regras → Publicar.
+//
+// Quem pode o quê:
+// - users/{uid}: cada pessoa só lê e grava o próprio registro (qual garagem ela usa).
+// - garages/{gid}: só membros leem e alteram. Alguém de fora só pode se adicionar
+//   como membro se tiver um código de convite válido (não expirado) dessa garagem.
+// - garages/{gid}/items: os dados do app. Só membros leem e gravam.
+// - invites/{code}: quem sabe o código consegue lê-lo (não dá para listar códigos).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function garageDoc(gid) {
+      return get(/databases/$(database)/documents/garages/$(gid));
+    }
+    function isMember(gid) {
+      return signedIn() && request.auth.uid in garageDoc(gid).data.members;
+    }
+    function inviteDoc(code) {
+      return get(/databases/$(database)/documents/invites/$(code));
+    }
+    // Entrada na garagem com convite: só pode acrescentar a si mesmo.
+    function validJoin(gid) {
+      return request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['members', 'names', 'joinCode'])
+        && request.resource.data.members.hasAll(resource.data.members)
+        && request.resource.data.members.size() == resource.data.members.size() + 1
+        && request.auth.uid in request.resource.data.members
+        && request.resource.data.joinCode is string
+        && inviteDoc(request.resource.data.joinCode).data.gid == gid
+        && inviteDoc(request.resource.data.joinCode).data.expiresAt > request.time;
+    }
+
+    match /users/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /garages/{gid} {
+      allow read: if signedIn() && request.auth.uid in resource.data.members;
+      allow create: if signedIn()
+        && request.resource.data.owner == request.auth.uid
+        && request.resource.data.members == [request.auth.uid];
+      allow update: if signedIn() && (
+        (request.auth.uid in resource.data.members
+          && request.resource.data.owner == resource.data.owner)
+        || validJoin(gid)
+      );
+      allow delete: if false;
+
+      match /items/{key} {
+        allow read, write: if isMember(gid);
+      }
+    }
+
+    match /invites/{code} {
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.by == request.auth.uid
+        && isMember(request.resource.data.gid);
+      allow delete: if signedIn() && resource.data.by == request.auth.uid;
+    }
+  }
+}
