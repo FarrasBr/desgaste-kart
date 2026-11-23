@@ -1,14 +1,16 @@
-/* Service worker do Desgaste do kart.
+/* Service worker do Kart (Desgaste, Stints e Acerto).
    Guarda o app no aparelho para ele abrir sem internet.
    >>> Ao publicar uma nova versão dos arquivos, aumente VERSION (v1 -> v2 -> v3...). <<< */
-var VERSION = 'v3';
+var VERSION = 'v4';
 var CACHE = 'desgaste-kart-' + VERSION;
 var ASSETS = [
   './',
   'index.html',
-  'manifest.webmanifest',
+  'acerto-modelo.js',
+  'modulo-acerto.js',
   'firebase-config.js',
   'sync.js',
+  'manifest.webmanifest',
   'vendor/firebase/firebase-app-compat.js',
   'vendor/firebase/firebase-auth-compat.js',
   'vendor/firebase/firebase-firestore-compat.js',
@@ -23,7 +25,6 @@ var ASSETS = [
   'fonts/barlow-condensed-latin-700-normal.woff2'
 ];
 
-// Instalação: baixa todos os arquivos do app (ignorando o cache HTTP) e guarda no cache.
 self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
@@ -37,7 +38,6 @@ self.addEventListener('install', function (event) {
   );
 });
 
-// Ativação: apaga caches de versões antigas e assume o controle das abas abertas.
 self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
@@ -48,7 +48,8 @@ self.addEventListener('activate', function (event) {
   );
 });
 
-// Requisições: responde na hora pelo cache e atualiza em segundo plano quando há internet.
+// Responde sempre pelo pacote da versão atual. Os arquivos só mudam todos juntos,
+// quando VERSION aumenta; assim uma internet ruim nunca mistura versões diferentes.
 self.addEventListener('fetch', function (event) {
   var req = event.request;
   if (req.method !== 'GET') return;
@@ -56,20 +57,13 @@ self.addEventListener('fetch', function (event) {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(req, { ignoreSearch: true }).then(function (cached) {
-      var network = fetch(req).then(function (res) {
-        if (res && res.ok) {
-          var copy = res.clone();
-          caches.open(CACHE).then(function (cache) { cache.put(req, copy); });
-        }
-        return res;
-      }).catch(function () { return null; });
-
-      if (cached) { event.waitUntil(network); return cached; }
-      return network.then(function (res) {
-        if (res) return res;
-        if (req.mode === 'navigate') return caches.match('index.html');
-        return new Response('', { status: 504, statusText: 'Offline' });
+    caches.open(CACHE).then(function (cache) {
+      return cache.match(req, { ignoreSearch: true }).then(function (cached) {
+        if (cached) return cached;
+        return fetch(req).catch(function () {
+          if (req.mode === 'navigate') return cache.match('index.html');
+          return new Response('', { status: 504, statusText: 'Offline' });
+        });
       });
     })
   );

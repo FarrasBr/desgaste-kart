@@ -20,6 +20,7 @@
     "vendor/firebase/firebase-auth-compat.js",
     "vendor/firebase/firebase-firestore-compat.js",
   ];
+  var EXTRA_COL = "kart3"; // stints, condições do dia e acerto
   var INVITE_DAYS = 7;
   var CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -31,6 +32,8 @@
     garage = null,
     unsubItems = null,
     unsubGarage = null,
+    unsubExtra = null,
+    extraOff = false,
     attached = false,
     pending = false,
     dirty = false,
@@ -330,6 +333,7 @@
     meta.gid = null;
     meta.shadow = {};
     meta.attached = false;
+      meta.x2 = null;
     saveMeta();
     phase = "noGarage";
     view = "main";
@@ -352,6 +356,7 @@
       meta.gid = g;
       meta.shadow = {};
       meta.attached = false;
+      meta.x2 = null;
       saveMeta();
     }
     attached = !!meta.attached;
@@ -365,12 +370,17 @@
     unsubItems = db
       .collection("garages/" + g + "/items")
       .onSnapshot({ includeMetadataChanges: true }, onItems, onListenError);
+    extraOff = false;
+    unsubExtra = db
+      .collection("garages/" + g + "/" + EXTRA_COL)
+      .onSnapshot({ includeMetadataChanges: true }, onExtra, onExtraError);
   }
 
   function detach() {
     if (unsubItems) unsubItems();
     if (unsubGarage) unsubGarage();
-    unsubItems = unsubGarage = null;
+    if (unsubExtra) unsubExtra();
+    unsubItems = unsubGarage = unsubExtra = null;
     gid = null;
     garage = null;
     attached = false;
@@ -384,6 +394,7 @@
       meta.gid = null;
       meta.shadow = {};
       meta.attached = false;
+      meta.x2 = null;
       saveMeta();
       phase = "noGarage";
       view = "main";
@@ -451,8 +462,108 @@
     render();
   }
 
+  /* ---------- coleção separada (stints, condições do dia e acerto) ----------
+     Mesma lógica da coleção "items". Um erro aqui nunca tira o aparelho da garagem. */
+  function x2() {
+    if (!meta.x2 || meta.x2.gid !== gid) meta.x2 = { gid: gid, shadow: {}, attached: false };
+    return meta.x2;
+  }
+  function onExtraError(err) {
+    extraOff = true;
+    setMsg(
+      err && err.code === "permission-denied"
+        ? "Stints e acerto ainda não sincronizam: falta publicar a regra nova do Firestore."
+        : errText(err),
+    );
+    render();
+  }
+  function onExtra(snap) {
+    if (!gid) return;
+    var x = x2();
+    if (!x.attached && snap.metadata.fromCache) return;
+    if (x.attached && !snap.docChanges().length) return;
+    flushExtra();
+
+    var cur = App.snapshotExtra();
+    var changes = [];
+    snap.docs.forEach(function (doc) {
+      var key = doc.id,
+        d = doc.data();
+      if (d.deleted) {
+        if (key in x.shadow || key in cur) {
+          delete x.shadow[key];
+          if (key in cur) changes.push({ key: key, deleted: true });
+        }
+        return;
+      }
+      if (typeof d.json !== "string") return;
+      var sig = sigOf(d.json, null);
+      if (x.shadow[key] === sig) return;
+      x.shadow[key] = sig;
+      var local = cur[key];
+      if (local && sigOf(JSON.stringify(local.data), null) === sig) return;
+      try {
+        changes.push({ key: key, data: JSON.parse(d.json), pos: null });
+      } catch (e) {
+        /* documento corrompido: ignora */
+      }
+    });
+    x.attached = true;
+    saveMeta();
+    if (changes.length) App.applyExtra(changes);
+    flushExtra();
+    render();
+  }
+  function flushExtra() {
+    if (!gid || !db || !user || extraOff) return;
+    var x = x2();
+    if (!x.attached) return;
+    var cur = App.snapshotExtra();
+    var ops = [];
+    Object.keys(cur).forEach(function (key) {
+      var json = JSON.stringify(cur[key].data);
+      var sig = sigOf(json, null);
+      if (x.shadow[key] === sig) return;
+      x.shadow[key] = sig;
+      ops.push([key, { col: cur[key].col, json: json, deleted: false }]);
+    });
+    Object.keys(x.shadow).forEach(function (key) {
+      if (key in cur) return;
+      delete x.shadow[key];
+      ops.push([key, { col: key.split("~")[0], json: null, deleted: true }]);
+    });
+    if (!ops.length) return;
+    saveMeta();
+    var col = db.collection("garages/" + gid + "/" + EXTRA_COL);
+    var stamp = firebase.firestore.FieldValue.serverTimestamp();
+    for (var i = 0; i < ops.length; i += 400) {
+      var b = db.batch();
+      ops.slice(i, i + 400).forEach(function (op) {
+        op[1].updatedAt = stamp;
+        op[1].by = user.uid;
+        b.set(col.doc(op[0]), op[1]);
+      });
+      b.commit().catch(function (err) {
+        // na próxima conexão o aparelho refaz a mesclagem completa
+        var atual = x2();
+        atual.shadow = {};
+        atual.attached = false;
+        saveMeta();
+        setMsg("Não foi possível enviar stints ou acerto: " + errText(err));
+        render();
+      });
+    }
+    pending = true;
+    render();
+    db.waitForPendingWrites().then(function () {
+      pending = false;
+      render();
+    });
+  }
+
   function flushNow() {
     clearTimeout(flushTimer);
+    flushExtra();
     if (!gid || !attached || !db || !user) return;
     dirty = false;
     var cur = App.snapshot();
@@ -500,6 +611,7 @@
     // Para não perder nada: na próxima conexão o aparelho refaz a mesclagem completa.
     meta.shadow = {};
     meta.attached = false;
+      meta.x2 = null;
     saveMeta();
     attached = false;
     pending = false;
@@ -755,7 +867,7 @@
         run(createInvite());
         break;
       case "share":
-        navigator.share({ title: "Desgaste do kart", text: "Convite para a garagem do Desgaste do kart", url: inviteLink(invite.code) }).catch(function () {});
+        navigator.share({ title: "Kart", text: "Convite para a garagem do Kart", url: inviteLink(invite.code) }).catch(function () {});
         break;
       case "copy":
         var link = inviteLink(invite.code);

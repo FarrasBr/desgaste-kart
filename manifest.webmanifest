@@ -1,7 +1,7 @@
 {
-  "name": "Desgaste do kart",
+  "name": "Kart",
   "short_name": "Kart",
-  "description": "Controle de óleo, pneus e estoque do kart.",
+  "description": "Pneus, stints, acerto, motores, estoque e peso do kart.",
   "lang": "pt-BR",
   "id": "./",
   "start_url": "./",

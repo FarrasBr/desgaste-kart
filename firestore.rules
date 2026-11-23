@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// Regras de segurança do Firestore para o Desgaste do kart.
+// Regras de segurança do Firestore para o Kart.
 // Cole este conteúdo em: Console do Firebase → Firestore Database → Regras → Publicar.
 //
 // Quem pode o quê:
@@ -8,6 +8,7 @@ rules_version = '2';
 // - garages/{gid}: só membros leem e alteram. Alguém de fora só pode se adicionar
 //   como membro se tiver um código de convite válido (não expirado) dessa garagem.
 // - garages/{gid}/items: os dados do app. Só membros leem e gravam.
+// - garages/{gid}/kart3: stints, condições do dia e acerto. Só membros leem e gravam.
 // - invites/{code}: quem sabe o código consegue lê-lo (não dá para listar códigos).
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -53,6 +54,10 @@ service cloud.firestore {
       allow delete: if false;
 
       match /items/{key} {
+        allow read, write: if isMember(gid);
+      }
+
+      match /kart3/{key} {
         allow read, write: if isMember(gid);
       }
     }
